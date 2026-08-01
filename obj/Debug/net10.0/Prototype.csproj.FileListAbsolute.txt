@@ -61,3 +61,4 @@ C:\Users\RbzAly\Documents\PROJETO PROGRAMAÇÃO\RAYLIB\Survival-Horror-Test-part
 C:\Users\RbzAly\Documents\PROJETO PROGRAMAÇÃO\RAYLIB\Survival-Horror-Test-part-5\obj\Debug\net10.0\Prototype.pdb
 C:\Users\RbzAly\Documents\PROJETO PROGRAMAÇÃO\RAYLIB\Survival-Horror-Test-part-5\obj\Debug\net10.0\Prototype.genruntimeconfig.cache
 C:\Users\RbzAly\Documents\PROJETO PROGRAMAÇÃO\RAYLIB\Survival-Horror-Test-part-5\obj\Debug\net10.0\ref\Prototype.dll
+C:\Users\RbzAly\Documents\PROJETO PROGRAMAÇÃO\RAYLIB\Survival-Horror-Test-part-5\obj\Debug\net10.0\Prototype.sourcelink.json

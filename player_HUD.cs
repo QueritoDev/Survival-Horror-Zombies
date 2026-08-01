@@ -15,11 +15,13 @@ public class HUD
 
     public void DrawStaminaBAR(float _STAMINA_MAX, float _staminaActual)
     {
+    if(GameManager.CurrentState!=GameState.Playing) return;
     float barX = 50.0f;
     float barY = 680.0f;
     float barMaxWidth = 200.0f;
     float barMaxHeight = 30.0f;
     float proportionalWidth = barMaxWidth * (_staminaActual / _STAMINA_MAX);
+    
     Rectangle borderRec =  new Rectangle(barX,barY, barMaxWidth, barMaxHeight);
     Raylib.DrawText($"Stamina: {(int)_staminaActual}", 50, 655, 28, Color.Black);
     Raylib.DrawRectangle((int)barX, (int)barY, (int)barMaxWidth, (int)barMaxHeight, Color.DarkGray);
@@ -30,6 +32,7 @@ public class HUD
 
     public void DrawRadialGauge (Vector2 _center, float currentValue, float maxValue)
     {
+    if(GameManager.CurrentState!=GameState.Playing) return;
     float innerRadius = 45f;
     float outRadius = 55f;
     float ringStart = -90f;
@@ -39,14 +42,15 @@ public class HUD
     float endAngle = ringStart + (totalArc * percentage);
     Color color_Glock = new Color(255, 255, 255);
     
-
+    //The colors of health-ring change according to the current state of life (if you've played Resident Evil, you'll understand this)
+    
     Color gaugeColor;
     if(percentage > 0.5f)
-        gaugeColor = Color.Green;
+        gaugeColor = Color.Green; //Health: Healthy
     else if(percentage > 0.25f)
-        gaugeColor = Color.Yellow;
+        gaugeColor = Color.Yellow; //Health: IN CAUTION
     else
-        gaugeColor = Color.Red;
+        gaugeColor = Color.Red; //Health: IN DANGER!
     
     Vector2 backGroundhud = new Vector2(_center.X+2, _center.Y);
     
@@ -62,7 +66,6 @@ public class HUD
         _center.Y - Glock.Height+10
     );
     Raylib.DrawTextureEx(Glock, allignedPos, 0, 2.1f, color_Glock);
-    
     }
 
     public void Unload()

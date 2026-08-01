@@ -58,6 +58,7 @@ public class InventoryUI
         
         if(InvIsShow)
         {
+            //yeah, I know this is pretty long
             cursorCol += (Raylib.IsKeyPressed(KeyboardKey.D) ? 1:0) - (Raylib.IsKeyPressed(KeyboardKey.A) ? 1:0);
             cursorRow += (Raylib.IsKeyPressed(KeyboardKey.S) ? 1:0) - (Raylib.IsKeyPressed(KeyboardKey.W) ? 1:0);
             

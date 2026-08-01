@@ -82,6 +82,10 @@ public class Player : Sprite
         isAlive = Health > 0f;
         if(!isAlive) return;
         
+        if(Raylib.IsKeyPressed(KeyboardKey.F)) // For testing purposes only
+            Health -= 2f;
+
+
         const float ACCELERATION = 800f;
         const float DECELERATION = 1200f;
         float deltaTime = Raylib.GetFrameTime();
@@ -89,8 +93,7 @@ public class Player : Sprite
         direction.X = (Raylib.IsKeyDown(KeyboardKey.D) ? 1:0) - (Raylib.IsKeyDown(KeyboardKey.A) ? 1:0); 
         direction.Y = (Raylib.IsKeyDown(KeyboardKey.S) ? 1:0) - (Raylib.IsKeyDown(KeyboardKey.W) ? 1:0);
         
-        if(inventory.InvIsShow)
-        {direction=Vector2.Zero;}
+        if(inventory.InvIsShow) {direction=Vector2.Zero;} // The player must be stopped when open inventory XD
         HaveStamina = Stamina>0;
         NoStamina = Stamina<=0;
 
@@ -141,14 +144,18 @@ public class Player : Sprite
 
         float frameWidthBack = texBackIdle.Width / (float)totalFrames;
         float frameHeightBack = texBackIdle.Height;
+        
 
-        // Animations Front POV
+
+        //Animations Front POV
         Rectangle frameRecIdleFront = new Rectangle(idleFrame * frameWidthFront, 0, frameWidthFront, frameHeightFront);
         Rectangle frameRecWalkingFront = new Rectangle(walkFrame * frameWidthFront, 0, frameWidthFront, frameHeightFront);
         Rectangle frameRecRunFront = new Rectangle(runFrames * frameWidthFront, 0, frameWidthFront, frameHeightFront);
 
-        // Animations Back POV
-        
+        //Animations Back POV
+        /*#FIXME (When the player switches to the backward-facing texture, the texture shifts slightly to the bottom-right corner.
+        Probably a visual problem, so if you have a better texture to player, switch it :) */
+
         Rectangle frameRecWalkingBack = new Rectangle(walkFrame * frameWidthBack, 0, frameWidthBack, frameHeightBack);
         Rectangle frameRecRunBack = new Rectangle(runFrames * frameWidthBack, 0, frameWidthBack, frameHeightBack);
         

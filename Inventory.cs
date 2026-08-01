@@ -7,10 +7,11 @@ public class Inventory
     const int COMBINE_COLS = 4;
     Item[,] itemGrid = new Item[GRID_ROWS, GRID_COLS];
     Item[,] combineGrid = new Item[COMBINE_ROWS, COMBINE_COLS];
+    
     bool IsCombinable(ItemType type)
     {
     return type == ItemType.Herb || type == ItemType.Powder;
-    // adiciona outros tipos combináveis conforme for criando
+    // adicione outros tipos combináveis conforme for criando
     }
 
     public Inventory()
@@ -26,7 +27,7 @@ public class Inventory
         AddStartingItems();
     }
 
-    void AddStartingItems()
+    void AddStartingItems() //Initial items of Player
     {
         Texture2D pistolTexture = Raylib.LoadTexture(Path.Combine("sprites", "Guns", "weapon_pistolTexture.png"));
         Item pistol = new Item("Pistola", ItemType.Weapon, 1, pistolTexture);

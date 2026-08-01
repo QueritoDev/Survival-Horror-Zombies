@@ -46,9 +46,9 @@ public static class Program
                 Raylib.EndMode2D();
                 
                 _Hud.DrawStaminaBAR(100f, rbz.Stamina);
-                _Hud.DrawRadialGauge(new Vector2(1160,630), rbz.Stamina, 100f);
+                _Hud.DrawRadialGauge(new Vector2(1160,630), rbz.Health, 100f);
                 inventoryUI.Draw();
-            switch(GameManager.CurrentState)
+            switch(GameManager.CurrentState) 
             {
             case GameState.Playing:
                 inventoryUI.Update(dt);
@@ -58,15 +58,20 @@ public static class Program
                 if(Raylib.IsKeyPressed(KeyboardKey.F5))
                     isShowDebug = !isShowDebug;
             break;
-            }
+            } 
+            /* Não é necessário inserir outros estados aqui, pois cada um deles estão configurado em seus próprios arquivios - Nos menus, por exemplo, sempre terá a condição
+            "(Se o CurrentState NÃO É IGUAL(!=) ao X_Menu) return;"
+            */
+            
             PausedMenu.Draw();
             MainMenu.Draw();
+            OptionsMenu.Draw();
             
             rlImGui.Begin();
                 DebugGame.OpenWindow();
                 DebugGame.PlayerSection(rbz.speed, rbz.Health, rbz.Stamina, rbz.IsStopped, rbz.IsWalking, rbz.IsRunning, rbz.pos);
                 DebugGame.InputSection(rbz.direction);
-                ImGui.Text($"{GameManager.CurrentState}");
+                ImGui.Text($"Current GameState: {GameManager.CurrentState}");
                 DebugGame.CloseWindow();
             rlImGui.End();
             Raylib.EndDrawing();

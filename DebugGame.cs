@@ -34,11 +34,14 @@ public class DebugGame
 
     public static void InputSection(Vector2 _direction)
     {
+        if(ImGui.CollapsingHeader("Player INPUT"))
+        {
         ImGui.Text($"Key pressed");
         ImGui.Text($"W: {_direction.Y<0}");
         ImGui.Text($"S: {_direction.Y>0}");
         ImGui.Text($"A: {_direction.X<0}");
         ImGui.Text($"D: {_direction.X>0}");
+        }
     }
 
     public static void HUD_Health(float _endAngle,float _percentage)
