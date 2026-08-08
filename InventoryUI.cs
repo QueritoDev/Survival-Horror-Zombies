@@ -88,7 +88,7 @@ public class InventoryUI
             }
 
             if(Raylib.IsKeyPressed(KeyboardKey.X))
-            {inventory.RemoveItem(cursorRow, cursorCol);}
+            {inventory.RemoveItem(cursorRow, cursorCol, currentTab==InventoryTab.Combine);}
         }
     }
 

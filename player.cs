@@ -44,7 +44,7 @@ public class Player : Sprite
     public bool IsRunning {get; private set;} = false;
     
 
-    public Player(Vector2 posInit) : base (posInit, SPEED_INIT)
+    public Player(Vector2 initialPosition) : base (initialPosition, SPEED_INIT)
     {
         speed = SPEED_INIT;
         texFrontIdle = Raylib.LoadTexture(Path.Combine("sprites", "player_char", "front", "Bowllingguychibi-Idle.png"));

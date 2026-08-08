@@ -9,7 +9,6 @@ public class HUD
     Texture2D Glock;
     public HUD()
     {
-        RequiemFont = Raylib.LoadFont(Path.Combine("fonts", "Requiem_RE9.ttf"));
         Glock = Raylib.LoadTexture(Path.Combine("sprites","Guns", "glock_p80.png"));
     }
 
@@ -40,13 +39,12 @@ public class HUD
     float totalArc = ringEnd - ringStart;
     float percentage = Math.Clamp(currentValue / maxValue, 0f, 1f);
     float endAngle = ringStart + (totalArc * percentage);
-    Color color_Glock = new Color(255, 255, 255);
     
+    Color GreenCustom = new Color(0,200,0);
     //The colors of health-ring change according to the current state of life (if you've played Resident Evil, you'll understand this)
-    
     Color gaugeColor;
     if(percentage > 0.5f)
-        gaugeColor = Color.Green; //Health: Healthy
+        gaugeColor = GreenCustom; //Health: Healthy
     else if(percentage > 0.25f)
         gaugeColor = Color.Yellow; //Health: IN CAUTION
     else
@@ -54,18 +52,29 @@ public class HUD
     
     Vector2 backGroundhud = new Vector2(_center.X+2, _center.Y);
     
-    Raylib.DrawCircleV(new Vector2(_center.X+4, _center.Y), 44f, Color.LightGray);
+    string valueText = $"Stamina:\n  {(int)currentValue}";
+    int fontSize = 20;
+    int offsetShadow = 2;
+    Vector2 textSize = Raylib.MeasureTextEx(Fonts.RequiemFont, valueText, fontSize, 0);
+    Vector2 gunPos = new Vector2(
+        _center.X - Glock.Width-39,
+        _center.Y - Glock.Height-4
+    );
+
+    Raylib.SetTextureFilter(Fonts.Montserrat_SemiBoldItalic.Texture, TextureFilter.Bilinear);
+    Vector2 ammo_TextPos = new Vector2(gunPos.X+75, gunPos.Y+48);
+    Vector2 shadow_AmmoText = new Vector2(ammo_TextPos.X, ammo_TextPos.Y+offsetShadow);
+    Raylib.DrawCircleV(new Vector2(_center.X+4, _center.Y), 50f, Raylib.Fade(Color.LightGray, 0.5f));
+    Raylib.DrawRectangle((int)ammo_TextPos.X, (int)ammo_TextPos.Y+10, 66, 22, Raylib.Fade(Color.LightGray, 0.2f));
     Raylib.DrawRing(_center, innerRadius, outRadius, ringStart, ringEnd+20, 64, Color.DarkGray);
     Raylib.DrawRing(_center, innerRadius, outRadius, -ringStart, -endAngle, 64, gaugeColor);
     
-    string valueText = $"Stamina:\n  {(int)currentValue}";
-    int fontSize = 20;
-    Vector2 textSize = Raylib.MeasureTextEx(RequiemFont, valueText, fontSize, 0);
-    Vector2 allignedPos = new Vector2(
-        _center.X - Glock.Width-2,
-        _center.Y - Glock.Height+10
-    );
-    Raylib.DrawTextureEx(Glock, allignedPos, 0, 2.1f, color_Glock);
+    
+    
+
+    Raylib.DrawTextureEx(Glock, gunPos, 0, 2.6f, Color.White);
+    Raylib.DrawTextEx(Fonts.Montserrat_SemiBoldItalic, "8/10", shadow_AmmoText, 39f, 0f, Color.Black);
+    Raylib.DrawTextEx(Fonts.Montserrat_SemiBoldItalic, "8/10", ammo_TextPos, 38f, 0f, Color.White);
     }
 
     public void Unload()

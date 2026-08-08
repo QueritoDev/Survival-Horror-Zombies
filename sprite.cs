@@ -9,9 +9,9 @@ public class Sprite
     public Vector2 direction;
     public float speed;
 
-    public Sprite (Vector2 posinit, float speedInit)
+    public Sprite (Vector2 initialPosition, float speedInit)
     {
-        pos = posinit;
+        pos = initialPosition;
         speed = speedInit;
         direction = new Vector2(0,0);
 
