@@ -16,7 +16,8 @@ void main()
     vec4 texelColor = texture(texture0, fragTexCoord);
 
     float dist = distance(gl_FragCoord.xy, playerScreenPos);
-    float fade = clamp(dist / lightRadius, 0.0, 0.7); // 0 = luz, 1 = escuro total
+    float fade = clamp(dist / lightRadius, 0.0, 0.8); // 0 = luz, 1 = escuro total
+
 
     vec3 darkened = texelColor.rgb * (1.0 - fade); // escurece a cor em vez de só a transparência
 

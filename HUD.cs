@@ -7,6 +7,7 @@ public class HUD
 {   
     Font RequiemFont;
     Texture2D Glock;
+    
     public HUD()
     {
         Glock = Raylib.LoadTexture(Path.Combine("sprites","Guns", "glock_p80.png"));
@@ -70,11 +71,13 @@ public class HUD
     Raylib.DrawRing(_center, innerRadius, outRadius, -ringStart, -endAngle, 64, gaugeColor);
     
     
+   
     
 
     Raylib.DrawTextureEx(Glock, gunPos, 0, 2.6f, Color.White);
     Raylib.DrawTextEx(Fonts.Montserrat_SemiBoldItalic, "8/10", shadow_AmmoText, 39f, 0f, Color.Black);
     Raylib.DrawTextEx(Fonts.Montserrat_SemiBoldItalic, "8/10", ammo_TextPos, 38f, 0f, Color.White);
+    
     }
 
     public void Unload()

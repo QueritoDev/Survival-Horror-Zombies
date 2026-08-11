@@ -32,6 +32,20 @@ public class DebugGame
         
     }
 
+    public static void EnemySection(float speed, float health, bool _stop, bool _walk, bool _run, Vector2 pos)
+    {
+        if(ImGui.CollapsingHeader("Enemy Info"))
+        {        
+            ImGui.Text($"Speed: {speed}");
+            ImGui.Text($"Health: {health}");
+            ImGui.Text($"IsStopped: {_stop}");
+            ImGui.Text($"IsWalking: {_walk}");
+            ImGui.Text($"IsRunning: {_run}");
+        }
+
+        
+    }
+
     public static void InputSection(Vector2 _direction)
     {
         if(ImGui.CollapsingHeader("Player INPUT"))

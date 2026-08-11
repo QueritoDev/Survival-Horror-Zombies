@@ -26,8 +26,6 @@ public class InventoryUI
     
     Font UI_Menu;
     Inventory inventory;
-   
-    
     Vector2 posInventory;
     public InventoryUI(ref Inventory _inventory)
     {

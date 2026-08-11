@@ -28,7 +28,9 @@ public static class Program
         Player rbz = new Player(new Vector2(500,500));
         Inventory inventory = new Inventory();
         InventoryUI inventoryUI = new InventoryUI(ref inventory);
-        
+        EnemyManager enemies = new EnemyManager();
+        enemies.Spawn(new Vector2(800, 100));
+
         Camera2D cam = new Camera2D();
         cam.Offset = new Vector2(screenWidth/2.0f, screenHeight/2.0f);
         cam.Target = (rbz.pos);
@@ -36,6 +38,7 @@ public static class Program
         cam.Zoom = 1.7f;
         
         ShaderEffect lightShader = new ShaderEffect(Path.Combine("shaders", "light.fs"));
+        
         RenderTexture2D canvas = Raylib.LoadRenderTexture(1280,720);
         
 
@@ -53,6 +56,7 @@ public static class Program
                 inventoryUI.Update(dt);
                 inventoryUI.Input();
                 rbz.Update(inventoryUI);
+                enemies.Update(dt, rbz.pos);
                 cam.Target = (rbz.pos);
                 if(Raylib.IsKeyPressed(KeyboardKey.F5))
                     isShowDebug = !isShowDebug;
@@ -69,12 +73,13 @@ public static class Program
                 Vector2 playerScreenPos = Raylib.GetWorldToScreen2D(rbz.pos, cam);
                 playerScreenPos.Y = 720 - playerScreenPos.Y;
                 lightShader.SetVector2("playerScreenPos", playerScreenPos);
-                lightShader.SetFloat("lightRadius", 720f);
+                lightShader.SetFloat("lightRadius", 620f);
                 
                 Raylib.BeginTextureMode(canvas);
                     Raylib.ClearBackground(Color.White);
                     Raylib.BeginMode2D(cam);
                         rbz.Draw();
+                        enemies.Draw();
                     Raylib.DrawText("Hello, world!", 400, 400, 20, Color.Black);
                     Raylib.EndMode2D();
                 Raylib.EndTextureMode();
@@ -82,7 +87,7 @@ public static class Program
          
             Raylib.BeginDrawing();
                 Raylib.ClearBackground(Color.White);
-
+                    
                 if(showWorld)
                 {
                     lightShader.Begin();
@@ -111,6 +116,7 @@ public static class Program
             Raylib.EndDrawing();
         }
         rbz.Unload();
+        enemies.UnloadAll();
         lightShader.Unload();
         Raylib.UnloadRenderTexture(canvas);
         inventoryUI.Unload();

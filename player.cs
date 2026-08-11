@@ -51,9 +51,9 @@ public class Player : Sprite
         texFrontWalking = Raylib.LoadTexture(Path.Combine("sprites", "player_char", "front", "Bowllingguychibi-Walk.png"));
         texRunningFront = Raylib.LoadTexture(Path.Combine("sprites", "player_char", "front", "Bowllingguychibi-Run.png"));
         texSide = Raylib.LoadTexture(Path.Combine("sprites", "player_char", "side", "BowllingguychibiLeft-Idle.png"));
-        texBackIdle = Raylib.LoadTexture(Path.Combine("sprites", "player_char", "back", "Bowllingguychibiback-Idle.png"));
-        texBackWalking = Raylib.LoadTexture(Path.Combine("sprites", "player_char", "back", "Bowllingguychibiback-Walk.png"));
-        texBackRunning = Raylib.LoadTexture(Path.Combine("sprites", "player_char", "back", "Bowllingguychibiback-Run.png"));
+        texBackIdle = Raylib.LoadTexture(Path.Combine("sprites", "player_char", "UP", "Bowllingguychibiback-Idle.png"));
+        texBackWalking = Raylib.LoadTexture(Path.Combine("sprites", "player_char", "UP", "Bowllingguychibiback-Walk.png"));
+        texBackRunning = Raylib.LoadTexture(Path.Combine("sprites", "player_char", "UP", "Bowllingguychibiback-Run.png"));
 
 
 
@@ -104,7 +104,7 @@ public class Player : Sprite
         float TargetSpeed = IsRunning ? MAX_SPEED : SPEED_INIT;
         
         if(IsStopped)
-            speed = Math.Max(0, speed - DECELERATION * deltaTime);
+            speed = Math.Max(0, speed - DECELERATION * deltaTime); 
         else
             speed = Math.Min(TargetSpeed, speed + ACCELERATION * deltaTime);
 
