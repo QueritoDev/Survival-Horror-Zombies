@@ -4,16 +4,17 @@ using Raylib_cs;
 
 public class DebugGame
 {
-    // DebugGame.cs
+    
+    public static bool isShowDebug = false;
     public static void OpenWindow()
     {
-        if(!Program.isShowDebug) return;
+        if(!isShowDebug) return;
         ImGui.Begin("Debug Menu");
     }
 
     public static void CloseWindow()
     {
-        if(!Program.isShowDebug) return;
+        if(!isShowDebug) return;
         ImGui.End();
     }
 

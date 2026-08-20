@@ -13,6 +13,17 @@ public class HUD
         Glock = Raylib.LoadTexture(Path.Combine("sprites","Guns", "glock_p80.png"));
     }
 
+
+    public void DrawHud(Player _player)
+    {
+        const float MAX_STAMINA = 100f;
+        const float MAX_HEALTH = 100f;
+        Vector2 radialGauge_Position = new Vector2(1160,630);
+        
+        DrawStaminaBAR(MAX_STAMINA, _player.Stamina);
+        DrawRadialGauge(radialGauge_Position, _player.Health, MAX_HEALTH);
+    }
+
     public void DrawStaminaBAR(float _STAMINA_MAX, float _staminaActual)
     {
     if(GameManager.CurrentState!=GameState.Playing) return;
@@ -51,11 +62,9 @@ public class HUD
     else
         gaugeColor = Color.Red; //Health: IN DANGER!
     
-    Vector2 backGroundhud = new Vector2(_center.X+2, _center.Y);
-    
     string valueText = $"Stamina:\n  {(int)currentValue}";
     int fontSize = 20;
-    int offsetShadow = 2;
+    
     Vector2 textSize = Raylib.MeasureTextEx(Fonts.RequiemFont, valueText, fontSize, 0);
     Vector2 gunPos = new Vector2(
         _center.X - Glock.Width-39,
@@ -63,23 +72,22 @@ public class HUD
     );
 
     Raylib.SetTextureFilter(Fonts.Montserrat_SemiBoldItalic.Texture, TextureFilter.Bilinear);
-    Vector2 ammo_TextPos = new Vector2(gunPos.X+75, gunPos.Y+48);
-    Vector2 shadow_AmmoText = new Vector2(ammo_TextPos.X, ammo_TextPos.Y+offsetShadow);
-    Raylib.DrawCircleV(new Vector2(_center.X+4, _center.Y), 50f, Raylib.Fade(Color.LightGray, 0.5f));
-    Raylib.DrawRectangle((int)ammo_TextPos.X, (int)ammo_TextPos.Y+10, 66, 22, Raylib.Fade(Color.LightGray, 0.2f));
+    DrawGunIcon(gunPos, _center);
     Raylib.DrawRing(_center, innerRadius, outRadius, ringStart, ringEnd+20, 64, Color.DarkGray);
     Raylib.DrawRing(_center, innerRadius, outRadius, -ringStart, -endAngle, 64, gaugeColor);
-    
-    
-   
-    
-
-    Raylib.DrawTextureEx(Glock, gunPos, 0, 2.6f, Color.White);
-    Raylib.DrawTextEx(Fonts.Montserrat_SemiBoldItalic, "8/10", shadow_AmmoText, 39f, 0f, Color.Black);
-    Raylib.DrawTextEx(Fonts.Montserrat_SemiBoldItalic, "8/10", ammo_TextPos, 38f, 0f, Color.White);
-    
     }
 
+    void DrawGunIcon(Vector2 gunPos, Vector2 _center)
+    {
+        int offsetShadow = 2;
+        Vector2 ammo_TextPos = new Vector2(gunPos.X+75, gunPos.Y+48);
+        Vector2 shadow_AmmoText = new Vector2(ammo_TextPos.X, ammo_TextPos.Y+offsetShadow);
+        Raylib.DrawCircleV(new Vector2(_center.X+4, _center.Y), 50f, Raylib.Fade(Color.LightGray, 0.5f));
+        Raylib.DrawRectangle((int)ammo_TextPos.X, (int)ammo_TextPos.Y+10, 66, 22, Raylib.Fade(Color.LightGray, 0.2f));
+        Raylib.DrawTextureEx(Glock, gunPos, 0, 2.6f, Color.White);
+        Raylib.DrawTextEx(Fonts.Montserrat_SemiBoldItalic, "8/10", shadow_AmmoText, 39f, 0f, Color.Black);
+        Raylib.DrawTextEx(Fonts.Montserrat_SemiBoldItalic, "8/10", ammo_TextPos, 38f, 0f, Color.White);
+    }
     public void Unload()
     {
         Raylib.UnloadTexture(Glock);

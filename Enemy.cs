@@ -22,7 +22,7 @@ public class Enemy : Sprite, IDamageable
     public bool IsWalking {get; private set;} = false;
 
     float retargetTimer = 0f;
-     const float RETARGET_INTERVAL = 0.5f;
+    const float RETARGET_INTERVAL = 0.5f;
 
     public Enemy(Vector2 InitialPosition) : base (InitialPosition, SPEED_INIT)
     {
@@ -76,7 +76,7 @@ public class Enemy : Sprite, IDamageable
         if(IsStopped) {Animation(dt, ref idleFrame);}
         if (direction.Y > 0 && IsWalking) {Animation(dt, ref walkFrame);}
         if (direction.Y < 0 && IsWalking) {Animation(dt, ref walkFrame);}
-
+        
         Move(dt);
     }
 

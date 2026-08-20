@@ -31,6 +31,7 @@ public static class PausedMenu
     static string textPause = "PAUSED";
     
     static Vector2 textSize = Raylib.MeasureTextEx(Fonts.RequiemFont, textPause, fontSize, 0);
+    static Vector2 textCentered = new Vector2(Raylib.GetScreenWidth()/2 - fontSize, Raylib.GetScreenHeight()/2 - fontSize/2);
     static Vector2 allignedPos = new Vector2(580, 340);
     
     public static void Input()
@@ -45,7 +46,8 @@ public static class PausedMenu
     {
         if(GameManager.CurrentState!=GameState.Paused) return;
         Raylib.DrawRectangle(0,0,1280,720, Raylib.Fade(Color.DarkGray,0.6f));
-        Raylib.DrawTextEx(Fonts.RequiemFont, textPause, allignedPos, fontSize, 0, Color.White);
+        Raylib.DrawTextEx(Fonts.RequiemFont, textPause, textCentered, fontSize, 0, Color.White);
+        
         Raylib.DrawTextEx(Fonts.RequiemFont, "M - Menu", new Vector2(580, 645), fontSize, 0, Color.White);
     }
 }
@@ -54,6 +56,7 @@ public static class OptionsMenu
 {
     static int widthButton = 100;
     static int heightButton = 50;
+    static int fontSize = 20;
     static float button_X = (Raylib.GetScreenWidth() - widthButton) / 2.0f;
     static float button_Y = (Raylib.GetScreenHeight() - heightButton) / 2.0f;
     static Rectangle button_rect = new Rectangle ((int)button_X, (int)button_Y, widthButton, heightButton);
@@ -63,6 +66,6 @@ public static class OptionsMenu
         if(GameManager.CurrentState!=GameState.Options) return;
         Raylib.DrawRectangle(0,0,1280,720, Raylib.Fade(Color.DarkGray,0.6f));
         Raylib.DrawRectangleRec(button_rect, Color.DarkBrown);
-        Raylib.DrawTextEx(Fonts.RequiemFont, "TESTE", new Vector2(button_X, button_Y), 20f, 0f, Color.White);
+        Raylib.DrawTextEx(Fonts.RequiemFont, "TESTE", new Vector2(button_X, button_Y), fontSize, 0f, Color.White);
     }
 }

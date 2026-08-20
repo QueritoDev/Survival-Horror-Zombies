@@ -160,7 +160,7 @@ public class InventoryUI
                 
             }
         }
-        if(Program.isShowDebug)
+        if(DebugGame.isShowDebug)
         {
         Raylib.DrawText($"Cursor_Row:{cursorRow}", 50,160, 30, Color.Green);
         Raylib.DrawText($"Cursor_Col:{cursorCol}", 50,190, 30, Color.Green);
@@ -189,11 +189,21 @@ public class InventoryUI
     }
     public void Unload()
     {
+        UnloadTextures();
+        UnloadSounds();  
+        Raylib.UnloadFont(UI_Menu);
+    }
+
+    void UnloadTextures()
+    {
         Raylib.UnloadTexture(inv_CombineUI);
         Raylib.UnloadTexture(inv_ItemsUI);
+    }
+
+    void UnloadSounds()
+    {
         Raylib.UnloadSound(inv_Open);
         Raylib.UnloadSound(inv_switchSection);
         Raylib.UnloadSound(inv_slotCursor);
-        Raylib.UnloadFont(UI_Menu);
     }
 }

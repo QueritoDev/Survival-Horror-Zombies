@@ -10,7 +10,7 @@ public static class Program
 {
     // STAThread is required if you deploy using NativeAOT on Windows
     // See https://github.com/raylib-cs/raylib-cs/issues/301
-    public static bool isShowDebug = false;
+    
     [System.STAThread]
     public static void Main()
     {
@@ -28,8 +28,20 @@ public static class Program
         Player rbz = new Player(new Vector2(500,500));
         Inventory inventory = new Inventory();
         InventoryUI inventoryUI = new InventoryUI(ref inventory);
+
+        
         EnemyManager enemies = new EnemyManager();
-        enemies.Spawn(new Vector2(800, 100));
+        Random random = new Random();
+        int spawnZombies_X;
+        int spawnZombies_Y;
+        
+        for(int i=0; i<20;i++)
+        {
+            spawnZombies_X = random.Next(400,800);
+            spawnZombies_Y = random.Next(400,800);
+            enemies.Spawn(new Vector2(spawnZombies_X, spawnZombies_Y));
+        }
+        
 
         Camera2D cam = new Camera2D();
         cam.Offset = new Vector2(screenWidth/2.0f, screenHeight/2.0f);
@@ -38,7 +50,6 @@ public static class Program
         cam.Zoom = 1.7f;
         
         ShaderEffect lightShader = new ShaderEffect(Path.Combine("shaders", "light.fs"));
-        
         RenderTexture2D canvas = Raylib.LoadRenderTexture(1280,720);
         
 
@@ -59,7 +70,7 @@ public static class Program
                 enemies.Update(dt, rbz.pos);
                 cam.Target = (rbz.pos);
                 if(Raylib.IsKeyPressed(KeyboardKey.F5))
-                    isShowDebug = !isShowDebug;
+                    DebugGame.isShowDebug = !DebugGame.isShowDebug;
             break;
             } 
             /* Não é necessário inserir outros estados aqui, pois cada um deles estão configurado em seus próprios arquivios - Nos menus, por exemplo, sempre terá a condição
@@ -96,8 +107,7 @@ public static class Program
                         Vector2.Zero, Color.White);
                     lightShader.End();
 
-                    _Hud.DrawStaminaBAR(100f, rbz.Stamina);
-                    _Hud.DrawRadialGauge(new Vector2(1160,630), rbz.Health, 100f);
+                    _Hud.DrawHud(rbz);
                     inventoryUI.Draw();
                 }
                 
@@ -115,7 +125,7 @@ public static class Program
 
             Raylib.EndDrawing();
         }
-        rbz.Unload();
+        rbz.UnloadEverything();
         enemies.UnloadAll();
         lightShader.Unload();
         Raylib.UnloadRenderTexture(canvas);

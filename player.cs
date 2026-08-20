@@ -55,15 +55,12 @@ public class Player : Sprite
         texBackWalking = Raylib.LoadTexture(Path.Combine("sprites", "player_char", "UP", "Bowllingguychibiback-Walk.png"));
         texBackRunning = Raylib.LoadTexture(Path.Combine("sprites", "player_char", "UP", "Bowllingguychibiback-Run.png"));
 
-
-
         Raylib.SetTextureFilter(texFrontIdle, TextureFilter.Point);
         Raylib.SetTextureFilter(texFrontWalking, TextureFilter.Point);
         Raylib.SetTextureFilter(texRunningFront, TextureFilter.Point);
         Raylib.SetTextureFilter(texBackIdle, TextureFilter.Point);
         Raylib.SetTextureFilter(texBackWalking, TextureFilter.Point);
         Raylib.SetTextureFilter(texBackRunning, TextureFilter.Point);
-    
     }
 
 
@@ -169,7 +166,12 @@ public class Player : Sprite
     }
 
 
-    public void Unload()
+    public void UnloadEverything()
+    {
+        UnloadTextures();
+    }
+
+    void UnloadTextures()
     {
         Raylib.UnloadTexture(texFrontIdle);
         Raylib.UnloadTexture(texFrontWalking);
@@ -178,6 +180,11 @@ public class Player : Sprite
         Raylib.UnloadTexture(texBackWalking);
         Raylib.UnloadTexture(texBackRunning);
         Raylib.UnloadTexture(texSide);
+    }
+
+    void UnloadSound()
+    {
+        
     }
 }
 

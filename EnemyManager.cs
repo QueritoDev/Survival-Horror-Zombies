@@ -3,7 +3,10 @@ using Raylib_cs;
 
 public class EnemyManager
 {
-   List<Enemy> enemies = new List<Enemy>();
+    List<Enemy> enemies = new List<Enemy>();
+    private const int MAX_ENEMIES = 15;
+    private const int MAX_RENDERED_ENEMIES = 8;
+    
 
    public void Spawn(Vector2 pos)
     {
@@ -16,6 +19,9 @@ public class EnemyManager
             }
         }
 
+        if(enemies.Count>= MAX_ENEMIES)
+            return;
+        
         Enemy newEnemy = new Enemy(pos);
         enemies.Add(newEnemy);
     }
@@ -32,7 +38,6 @@ public class EnemyManager
             enemy.Draw();
     }
 
-    
     bool TryDamage(IDamageable target, Rectangle targetRec, Rectangle attackRec, float amount)
     {
         if(Raylib.CheckCollisionRecs(attackRec, targetRec))
