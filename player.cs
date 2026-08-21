@@ -6,13 +6,16 @@ using System.Numerics;
 using System.Security.Cryptography.X509Certificates;
 using Raylib_cs;
 using RayGUI_cs;
+using ZombieShooter;
 
 namespace Players;
 
 public class Player : Sprite
 {
     Texture2D texFrontIdle, texFrontWalking, texRunningFront, 
+    
     texSide, texBackIdle, texBackWalking, texBackRunning;
+    float angleDeg = 0f;
     int idleFrame = 0;
     int walkFrame = 0;
     int totalFrames = 8;
@@ -47,6 +50,8 @@ public class Player : Sprite
     public Player(Vector2 initialPosition) : base (initialPosition, SPEED_INIT)
     {
         speed = SPEED_INIT;
+        RenderTexture2D playerTexture = Raylib.LoadRenderTexture(64,64);
+        /*OLD TEXTURES
         texFrontIdle = Raylib.LoadTexture(Path.Combine("sprites", "player_char", "front", "Bowllingguychibi-Idle.png"));
         texFrontWalking = Raylib.LoadTexture(Path.Combine("sprites", "player_char", "front", "Bowllingguychibi-Walk.png"));
         texRunningFront = Raylib.LoadTexture(Path.Combine("sprites", "player_char", "front", "Bowllingguychibi-Run.png"));
@@ -61,9 +66,10 @@ public class Player : Sprite
         Raylib.SetTextureFilter(texBackIdle, TextureFilter.Point);
         Raylib.SetTextureFilter(texBackWalking, TextureFilter.Point);
         Raylib.SetTextureFilter(texBackRunning, TextureFilter.Point);
+        */
     }
 
-
+    /*
     public void Animation(float _dt, ref int _frameWalk)
     {
         frameTimer += _dt;
@@ -73,6 +79,8 @@ public class Player : Sprite
             _frameWalk = (_frameWalk+1) % totalFrames;
         }
     }
+    */
+
 
     public void Update(InventoryUI inventory)
     {
@@ -81,8 +89,8 @@ public class Player : Sprite
         
         if(Raylib.IsKeyPressed(KeyboardKey.F)) // For testing purposes only
             Health -= 2f;
-
-
+        
+        
         const float ACCELERATION = 800f;
         const float DECELERATION = 1200f;
         float deltaTime = Raylib.GetFrameTime();
@@ -123,36 +131,45 @@ public class Player : Sprite
             }
         }
 
+
+        /* OLD ANIMATIONS
         if(IsStopped) {Animation(deltaTime, ref idleFrame);}
         if (direction.Y > 0 && IsWalking) {Animation(deltaTime, ref walkFrame);}
         if (direction.Y < 0 && IsWalking) {Animation(deltaTime, ref walkFrame);}
         if (direction.Y > 0 && IsRunning) {Animation(deltaTime, ref runFrames);}
         if (direction.Y < 0 && IsRunning) {Animation(deltaTime, ref runFrames);}
-        
+        */
+
         Move(deltaTime);
     }
 
-    public void Draw()
+    public Vector2 GetPosition()
+    {
+        return this.pos;
+    }
+
+    public void Draw(float angleRad)
     {
         if(!isAlive) return;
         
+        SkinPlayer(angleRad);
+
+        /* OLD ANIMATIONS (sprites)
         float frameWidthFront = texFrontIdle.Width / (float)totalFrames;
         float frameHeightFront = texFrontIdle.Height;
 
         float frameWidthBack = texBackIdle.Width / (float)totalFrames;
         float frameHeightBack = texBackIdle.Height;
         
-
-
-        //Animations Front POV
+        Animations Moving Down POV
         Rectangle frameRecIdleFront = new Rectangle(idleFrame * frameWidthFront, 0, frameWidthFront, frameHeightFront);
         Rectangle frameRecWalkingFront = new Rectangle(walkFrame * frameWidthFront, 0, frameWidthFront, frameHeightFront);
         Rectangle frameRecRunFront = new Rectangle(runFrames * frameWidthFront, 0, frameWidthFront, frameHeightFront);
 
-        //Animations Back POV
-        /*#FIXME (When the player switches to the backward-facing texture, the texture shifts slightly to the bottom-right corner.
-        Probably a visual problem, so if you have a better texture to player, switch it :) */
-
+        Animations Moving UP POV
+        #FIXME (When the player switches to the backward-facing texture, the texture shifts slightly to the bottom-right corner.
+        It's just a visual problem, so if you have a better texture to player, switch it :)
+        
         Rectangle frameRecWalkingBack = new Rectangle(walkFrame * frameWidthBack, 0, frameWidthBack, frameHeightBack);
         Rectangle frameRecRunBack = new Rectangle(runFrames * frameWidthBack, 0, frameWidthBack, frameHeightBack);
         
@@ -162,8 +179,52 @@ public class Player : Sprite
         if(IsWalking && direction.Y < 0){Raylib.DrawTextureRec(texBackWalking, frameRecWalkingBack, pos, Color.White);}
         if(IsRunning && direction.Y > 0){Raylib.DrawTextureRec(texRunningFront, frameRecRunFront, pos, Color.White);}
         if(IsRunning && direction.Y < 0){Raylib.DrawTextureRec(texBackRunning, frameRecRunBack, pos, Color.White);}
-        
+        */
+
     }
+
+ 
+    public void SkinPlayer(float angleRad)
+    {
+        
+        //Body player
+        Raylib.DrawCircleV(pos, 26f, Raylib.Fade(Color.Black, 0.4f)); //Shadow player
+        Raylib.DrawCircleV(pos, 24f, Color.Black); // Stroke effect
+        Raylib.DrawCircleV(pos, 22f, Color.Beige); // Skin player
+
+        // Distance between hands
+        Vector2 rightOffset = new Vector2(-10f, 19f);
+        Vector2 leftOffset = new Vector2(10f, 19f);
+
+        float adjustedAngle = angleRad - (MathF.PI / 2f);
+
+        // Sin and Cos of Angle
+        float cos = MathF.Cos(adjustedAngle);
+        float sin = MathF.Sin(adjustedAngle);
+
+        // Rotate the displacement points around the center (0,0)
+        Vector2 rotatedRight = new Vector2(
+            rightOffset.X * cos - rightOffset.Y * sin,
+            rightOffset.X * sin + rightOffset.Y * cos
+        );
+
+        Vector2 rotatedLeft = new Vector2(
+            leftOffset.X * cos - leftOffset.Y * sin,
+            leftOffset.X * sin + leftOffset.Y * cos
+        );
+
+        // 5. Adds the player's current position to obtain the actual world coordinates.
+        Vector2 RightHandPos = pos + rotatedRight;
+        Vector2 LeftHandPos = pos + rotatedLeft;
+
+        // Draw the hands in the newly recalculated positions
+        
+        Raylib.DrawRing(RightHandPos, 5f, 8f, 0f, 360f, 16, Color.Black); // Shadow Right-Hand
+        Raylib.DrawCircleV(RightHandPos, 6f, Color.Beige); // Right Hand
+
+        Raylib.DrawRing(LeftHandPos, 5f, 8f, 0f, 360f, 16, Color.Black); // Shadow Left-Hand
+        Raylib.DrawCircleV(LeftHandPos, 6f, Color.Beige); // Left Hand
+    }   
 
 
     public void UnloadEverything()
@@ -173,6 +234,7 @@ public class Player : Sprite
 
     void UnloadTextures()
     {
+        /* OLD ANIMATIONS
         Raylib.UnloadTexture(texFrontIdle);
         Raylib.UnloadTexture(texFrontWalking);
         Raylib.UnloadTexture(texRunningFront);
@@ -180,6 +242,7 @@ public class Player : Sprite
         Raylib.UnloadTexture(texBackWalking);
         Raylib.UnloadTexture(texBackRunning);
         Raylib.UnloadTexture(texSide);
+        */
     }
 
     void UnloadSound()

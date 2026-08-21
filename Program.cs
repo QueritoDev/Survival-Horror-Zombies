@@ -4,6 +4,8 @@ using Raylib_cs;
 using ImGuiNET;
 using rlImGui_cs;
 using System.Reflection.Metadata;
+using ZombieShooter;
+using System.Diagnostics;
 
 
 public static class Program
@@ -20,28 +22,19 @@ public static class Program
 
         Raylib.InitWindow(screenWidth, screenHeight, "Survival Horror - Learning");
         Raylib.InitAudioDevice();
-        Raylib.SetTargetFPS(100);
+        Raylib.SetTargetFPS(1000);
         Raylib.SetExitKey(KeyboardKey.Null);
+        
         rlImGui.Setup();
+        Texture2D cursorTexture = Raylib.LoadTexture(Path.Combine("sprites", "Crosshairs", "Sight_64x64_008.png"));
+        int halfSizeOfCursor = cursorTexture.Width / 2;
         
         HUD _Hud = new HUD();
+        
         Player rbz = new Player(new Vector2(500,500));
+        ManagerGame game = new ManagerGame();
         Inventory inventory = new Inventory();
         InventoryUI inventoryUI = new InventoryUI(ref inventory);
-
-        
-        EnemyManager enemies = new EnemyManager();
-        Random random = new Random();
-        int spawnZombies_X;
-        int spawnZombies_Y;
-        
-        for(int i=0; i<20;i++)
-        {
-            spawnZombies_X = random.Next(400,800);
-            spawnZombies_Y = random.Next(400,800);
-            enemies.Spawn(new Vector2(spawnZombies_X, spawnZombies_Y));
-        }
-        
 
         Camera2D cam = new Camera2D();
         cam.Offset = new Vector2(screenWidth/2.0f, screenHeight/2.0f);
@@ -55,19 +48,26 @@ public static class Program
 
         while (!Raylib.WindowShouldClose())
         {
-           
+            Raylib.HideCursor();
             GameManager.Input();
             MainMenu.Input();
             PausedMenu.Input();
             float dt = Raylib.GetFrameTime();
             
+            Vector2 screenMousePos = Raylib.GetMousePosition();
+            Vector2 worldMousePos = Raylib.GetScreenToWorld2D(screenMousePos, cam);
+
+            float deltaX = worldMousePos.X - rbz.pos.X;
+            float deltaY = worldMousePos.Y - rbz.pos.Y;
+            float angleRad = MathF.Atan2(deltaY, deltaX);
             switch(GameManager.CurrentState) 
             {
             case GameState.Playing:
                 inventoryUI.Update(dt);
                 inventoryUI.Input();
                 rbz.Update(inventoryUI);
-                enemies.Update(dt, rbz.pos);
+                game.Update(dt, rbz);
+                
                 cam.Target = (rbz.pos);
                 if(Raylib.IsKeyPressed(KeyboardKey.F5))
                     DebugGame.isShowDebug = !DebugGame.isShowDebug;
@@ -89,8 +89,8 @@ public static class Program
                 Raylib.BeginTextureMode(canvas);
                     Raylib.ClearBackground(Color.White);
                     Raylib.BeginMode2D(cam);
-                        rbz.Draw();
-                        enemies.Draw();
+                        rbz.Draw(angleRad);
+                        game.Draw();
                     Raylib.DrawText("Hello, world!", 400, 400, 20, Color.Black);
                     Raylib.EndMode2D();
                 Raylib.EndTextureMode();
@@ -106,11 +106,11 @@ public static class Program
                         new Rectangle(0,0, canvas.Texture.Width, -canvas.Texture.Height), 
                         Vector2.Zero, Color.White);
                     lightShader.End();
-
                     _Hud.DrawHud(rbz);
+                    game.DrawHUD();
                     inventoryUI.Draw();
+                    Raylib.DrawTexture(cursorTexture, (int)screenMousePos.X-halfSizeOfCursor, (int)screenMousePos.Y-halfSizeOfCursor, Color.Yellow);
                 }
-                
             PausedMenu.Draw();
             MainMenu.Draw();
             OptionsMenu.Draw();
@@ -122,11 +122,11 @@ public static class Program
                 ImGui.Text($"Current GameState: {GameManager.CurrentState}");
                 DebugGame.CloseWindow();
             rlImGui.End();
-
+            Raylib.DrawFPS(screenWidth-82,0);
             Raylib.EndDrawing();
         }
+        
         rbz.UnloadEverything();
-        enemies.UnloadAll();
         lightShader.Unload();
         Raylib.UnloadRenderTexture(canvas);
         inventoryUI.Unload();

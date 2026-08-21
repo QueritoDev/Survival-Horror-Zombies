@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\RbzAly\\Documents\\Projeto_Programacao\\RAYLIB\\Survival-Horror-Test\\Prototype.csproj": {}
+    "C:\\Users\\RbzAly\\Documents\\Projeto_Programacao\\Survival Horror - WIP\\Prototype.csproj": {}
   },
   "projects": {
-    "C:\\Users\\RbzAly\\Documents\\Projeto_Programacao\\RAYLIB\\Survival-Horror-Test\\Prototype.csproj": {
+    "C:\\Users\\RbzAly\\Documents\\Projeto_Programacao\\Survival Horror - WIP\\Prototype.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\RbzAly\\Documents\\Projeto_Programacao\\RAYLIB\\Survival-Horror-Test\\Prototype.csproj",
+        "projectUniqueName": "C:\\Users\\RbzAly\\Documents\\Projeto_Programacao\\Survival Horror - WIP\\Prototype.csproj",
         "projectName": "Prototype",
-        "projectPath": "C:\\Users\\RbzAly\\Documents\\Projeto_Programacao\\RAYLIB\\Survival-Horror-Test\\Prototype.csproj",
+        "projectPath": "C:\\Users\\RbzAly\\Documents\\Projeto_Programacao\\Survival Horror - WIP\\Prototype.csproj",
         "packagesPath": "C:\\Users\\RbzAly\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\RbzAly\\Documents\\Projeto_Programacao\\RAYLIB\\Survival-Horror-Test\\obj\\",
+        "outputPath": "C:\\Users\\RbzAly\\Documents\\Projeto_Programacao\\Survival Horror - WIP\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\RbzAly\\AppData\\Roaming\\NuGet\\NuGet.Config"
