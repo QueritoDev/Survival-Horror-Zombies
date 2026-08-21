@@ -35,7 +35,7 @@ public static class Program
         ManagerGame game = new ManagerGame();
         Inventory inventory = new Inventory();
         InventoryUI inventoryUI = new InventoryUI(ref inventory);
-
+        
         Camera2D cam = new Camera2D();
         cam.Offset = new Vector2(screenWidth/2.0f, screenHeight/2.0f);
         cam.Target = (rbz.pos);
@@ -63,11 +63,11 @@ public static class Program
             switch(GameManager.CurrentState) 
             {
             case GameState.Playing:
+                
                 inventoryUI.Update(dt);
                 inventoryUI.Input();
-                rbz.Update(inventoryUI);
+                rbz.Update(inventoryUI, cam);
                 game.Update(dt, rbz);
-                
                 cam.Target = (rbz.pos);
                 if(Raylib.IsKeyPressed(KeyboardKey.F5))
                     DebugGame.isShowDebug = !DebugGame.isShowDebug;

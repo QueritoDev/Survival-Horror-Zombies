@@ -28,6 +28,7 @@ public class Player : Sprite
     private float _stamina = STAMINA_INIT;
     const float STAMINA_REGEN_DELAY = 2.1f;
     float staminaRegenTimer = 0f;
+    public Pistol Gun { get; private set; }
     public float Stamina 
     {
         get => _stamina;
@@ -46,10 +47,12 @@ public class Player : Sprite
     public bool IsStopped {get; private set;} = true;
     public bool IsRunning {get; private set;} = false;
     
+    
 
     public Player(Vector2 initialPosition) : base (initialPosition, SPEED_INIT)
     {
         speed = SPEED_INIT;
+        Gun = new Pistol();
         RenderTexture2D playerTexture = Raylib.LoadRenderTexture(64,64);
         /*OLD TEXTURES
         texFrontIdle = Raylib.LoadTexture(Path.Combine("sprites", "player_char", "front", "Bowllingguychibi-Idle.png"));
@@ -82,7 +85,7 @@ public class Player : Sprite
     */
 
 
-    public void Update(InventoryUI inventory)
+    public void Update(InventoryUI inventory, Camera2D camera)
     {
         isAlive = Health > 0f;
         if(!isAlive) return;
@@ -141,6 +144,19 @@ public class Player : Sprite
         */
 
         Move(deltaTime);
+        Vector2 screenMouse = Raylib.GetMousePosition();
+        Vector2 offsetGunBarrel= new Vector2(10f, -5f);
+        Vector2 originFire = GetPosition() + offsetGunBarrel;
+        Vector2 worldMouse = Raylib.GetScreenToWorld2D(screenMouse, camera);
+      
+        if (Raylib.IsMouseButtonPressed(MouseButton.Left))
+        {
+            Gun.Atirar(originFire, worldMouse);
+            
+        }
+
+        Gun.Update(deltaTime);
+        
     }
 
     public Vector2 GetPosition()
@@ -153,7 +169,7 @@ public class Player : Sprite
         if(!isAlive) return;
         
         SkinPlayer(angleRad);
-
+        Gun.Draw();
         /* OLD ANIMATIONS (sprites)
         float frameWidthFront = texFrontIdle.Width / (float)totalFrames;
         float frameHeightFront = texFrontIdle.Height;
@@ -180,7 +196,7 @@ public class Player : Sprite
         if(IsRunning && direction.Y > 0){Raylib.DrawTextureRec(texRunningFront, frameRecRunFront, pos, Color.White);}
         if(IsRunning && direction.Y < 0){Raylib.DrawTextureRec(texBackRunning, frameRecRunBack, pos, Color.White);}
         */
-
+       
     }
 
  

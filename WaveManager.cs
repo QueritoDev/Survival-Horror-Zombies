@@ -1,6 +1,6 @@
 using System;
 using System.Collections.Generic;
-
+using Raylib_cs;
 namespace ZombieShooter
 {
     public enum WaveState
@@ -21,6 +21,7 @@ namespace ZombieShooter
     // - a wave só termina quando TODOS os zumbis foram spawnados E mortos
     public class WaveManager
     {
+        
         private readonly List<SpawnPoint> spawnPoints;
         private readonly List<Zombie> activeZombies; // referência à lista do GameManager
         private readonly Random random = new Random();
@@ -38,17 +39,18 @@ namespace ZombieShooter
         private float spawnTimer;
         private readonly float spawnInterval = 1.2f;
 
-        private float intermissionTimer = 5f; // tempo antes da wave 1 começar
-        private const float IntermissionDuration = 8f;
+        private float intermissionTimer = 10f; // tempo antes da wave 1 começar
+        private const float IntermissionDuration = 16f;
 
         private const int MaxConcurrentZombies = 10;
-
         // Eventos pra você "plugar" som, UI, etc sem acoplar essas coisas aqui dentro
         public event Action<int> OnWaveStart;
         public event Action<int> OnWaveComplete;
-
+        
+        
         public WaveManager(List<SpawnPoint> spawnPoints, List<Zombie> activeZombies)
         {
+            
             this.spawnPoints = spawnPoints;
             this.activeZombies = activeZombies;
         }
@@ -59,6 +61,7 @@ namespace ZombieShooter
             {
                 case WaveState.Intermission:
                     UpdateIntermission(deltaTime);
+                        
                     break;
                 case WaveState.Spawning:
                     UpdateSpawning(deltaTime);
@@ -81,12 +84,15 @@ namespace ZombieShooter
         private void StartNextWave()
         {
             CurrentWave++;
+            
             zombiesToSpawnThisWave = CalculateZombiesForWave(CurrentWave);
             zombiesSpawnedThisWave = 0;
             spawnTimer = 0f;
             State = WaveState.Spawning;
-
+            
+            
             OnWaveStart?.Invoke(CurrentWave);
+            
         }
 
         private void UpdateSpawning(float deltaTime)

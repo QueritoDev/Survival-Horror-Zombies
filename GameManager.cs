@@ -13,9 +13,11 @@ namespace ZombieShooter
         private readonly List<Zombie> activeZombies = new List<Zombie>();
         private readonly List<SpawnPoint> spawnPoints;
         private readonly WaveManager waveManager;
-
-        // TODO: troque isso pela posição real do seu jogador
         private Vector2 playerPosition;
+        
+        private Sound Start_Round;
+        private Sound Round_Change;
+        private bool playedStartSound = false;
 
         public ManagerGame()
         {
@@ -27,22 +29,59 @@ namespace ZombieShooter
                 new SpawnPoint(new Vector2(1230, 670)),
             };
 
+            Start_Round = Raylib.LoadSound(Path.Combine("audio", "ost", "First-Round.mp3"));
+            Round_Change = Raylib.LoadSound(Path.Combine("audio", "ost", "Round-Change.mp3"));
+            Raylib.SetSoundVolume(Start_Round, 0.8f);
+            Raylib.SetSoundVolume(Round_Change, 0.8f);
+        
             waveManager = new WaveManager(spawnPoints, activeZombies);
             waveManager.OnWaveStart += wave => Console.WriteLine($"Wave {wave} iniciada!");
-            waveManager.OnWaveComplete += wave => Console.WriteLine($"Wave {wave} completa!");
+            waveManager.OnWaveComplete += EndingWave;
+        }
+
+        private void EndingWave(int wave)
+        {
+            Console.WriteLine($"Wave {wave} completa!");
+            
+            // Toca o som de mudança de round
+            Raylib.PlaySound(Round_Change);
         }
 
         public void Update(float deltaTime, Player player)
         {
+            if(!playedStartSound)
+            {
+                Raylib.PlaySound(Start_Round);
+                playedStartSound = true;
+            }
+            
             playerPosition = player.GetPosition();
             waveManager.Update(deltaTime);
-
+            
             
             foreach (Zombie zombie in activeZombies)
             {
                 zombie.Update(deltaTime, playerPosition);
             }
             ResolveZombieCollisions();
+            
+            foreach (var bullet in player.Gun.Projeteis)
+            {
+                if (!bullet.Ativo) continue; // Ignora balas inativas
+
+                foreach (var zombie in activeZombies)
+                {
+                    if (!zombie.IsAlive) continue; // Ignora zumbis mortos
+
+                    // Checa a colisão circular entre a bala e o Zombie.Radius
+                    if (Raylib.CheckCollisionCircles(bullet.Posicao, bullet.Raio, zombie.Position, Zombie.Radius))
+                    {
+                        zombie.TakeDamage(25); // Exemplo: 25 de dano
+                        bullet.Ativo = false;    // Destrói a bala
+                        break;                 // Uma bala não atravessa múltiplos zumbis
+                    }
+                }
+            }
             // remove zumbis mortos da lista (é essa lista que o WaveManager observa)
             activeZombies.RemoveAll(z => !z.IsAlive);
         }
