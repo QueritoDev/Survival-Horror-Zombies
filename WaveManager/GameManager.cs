@@ -65,19 +65,19 @@ namespace ZombieShooter
             }
             ResolveZombieCollisions();
             
-            foreach (var bullet in player.Gun.Projeteis)
+            foreach (var bullet in player.EquippedWeapon.Projeteis)
             {
-                if (!bullet.Ativo) continue; // Ignora balas inativas
+                if (!bullet.Active) continue; // Ignora balas inativas
 
                 foreach (var zombie in activeZombies)
                 {
                     if (!zombie.IsAlive) continue; // Ignora zumbis mortos
 
                     // Checa a colisão circular entre a bala e o Zombie.Radius
-                    if (Raylib.CheckCollisionCircles(bullet.Posicao, bullet.Raio, zombie.Position, Zombie.Radius))
+                    if (Raylib.CheckCollisionCircles(bullet.Position, bullet.Radius, zombie.Position, Zombie.Radius))
                     {
-                        zombie.TakeDamage(25); // Exemplo: 25 de dano
-                        bullet.Ativo = false;    // Destrói a bala
+                        zombie.TakeDamage(player.EquippedWeapon.Damage); // Exemplo: 25 de dano
+                        bullet.Active = false;    // Destrói a bala
                         break;                 // Uma bala não atravessa múltiplos zumbis
                     }
                 }

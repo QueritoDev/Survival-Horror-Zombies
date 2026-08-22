@@ -27,8 +27,8 @@ public static class Program
         
         rlImGui.Setup();
         Texture2D cursorTexture = Raylib.LoadTexture(Path.Combine("sprites", "Crosshairs", "Sight_64x64_008.png"));
-        int halfSizeOfCursor = cursorTexture.Width / 2;
-        
+        float halfSizeOfCursor = cursorTexture.Width / 2.4f;
+        Vector2 cursorPosition;
         HUD _Hud = new HUD();
         
         Player rbz = new Player(new Vector2(500,500));
@@ -56,7 +56,6 @@ public static class Program
             
             Vector2 screenMousePos = Raylib.GetMousePosition();
             Vector2 worldMousePos = Raylib.GetScreenToWorld2D(screenMousePos, cam);
-
             float deltaX = worldMousePos.X - rbz.pos.X;
             float deltaY = worldMousePos.Y - rbz.pos.Y;
             float angleRad = MathF.Atan2(deltaY, deltaX);
@@ -66,7 +65,7 @@ public static class Program
                 
                 inventoryUI.Update(dt);
                 inventoryUI.Input();
-                rbz.Update(inventoryUI, cam);
+                rbz.Update(inventoryUI, cam, angleRad);
                 game.Update(dt, rbz);
                 cam.Target = (rbz.pos);
                 if(Raylib.IsKeyPressed(KeyboardKey.F5))
@@ -95,7 +94,7 @@ public static class Program
                     Raylib.EndMode2D();
                 Raylib.EndTextureMode();
             }
-         
+            cursorPosition = new Vector2(screenMousePos.X-halfSizeOfCursor, screenMousePos.Y-halfSizeOfCursor);
             Raylib.BeginDrawing();
                 Raylib.ClearBackground(Color.White);
                     
@@ -109,7 +108,7 @@ public static class Program
                     _Hud.DrawHud(rbz);
                     game.DrawHUD();
                     inventoryUI.Draw();
-                    Raylib.DrawTexture(cursorTexture, (int)screenMousePos.X-halfSizeOfCursor, (int)screenMousePos.Y-halfSizeOfCursor, Color.Yellow);
+                    Raylib.DrawTextureEx(cursorTexture, cursorPosition, 0f, 0.8f, Color.Yellow);
                 }
             PausedMenu.Draw();
             MainMenu.Draw();
@@ -130,7 +129,7 @@ public static class Program
         lightShader.Unload();
         Raylib.UnloadRenderTexture(canvas);
         inventoryUI.Unload();
-        _Hud.Unload();
+        _Hud.Unload(rbz);
         rlImGui.Shutdown();
         Raylib.CloseWindow();
     }

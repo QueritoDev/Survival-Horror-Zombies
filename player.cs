@@ -15,6 +15,7 @@ public class Player : Sprite
     Texture2D texFrontIdle, texFrontWalking, texRunningFront, 
     
     texSide, texBackIdle, texBackWalking, texBackRunning;
+    protected Sound switchGun_Sound;
     float angleDeg = 0f;
     int idleFrame = 0;
     int walkFrame = 0;
@@ -28,7 +29,11 @@ public class Player : Sprite
     private float _stamina = STAMINA_INIT;
     const float STAMINA_REGEN_DELAY = 2.1f;
     float staminaRegenTimer = 0f;
-    public Pistol Gun { get; private set; }
+    public Gun[] Arsenal { get; private set; } = new Gun[3];
+    public int CurrentSlot { get; private set; } = 0;
+    public Gun EquippedWeapon => Arsenal[CurrentSlot];
+
+
     public float Stamina 
     {
         get => _stamina;
@@ -39,6 +44,7 @@ public class Player : Sprite
     bool NoStamina = false;
     
     const float SPEED_INIT = 350f;
+    const float SPEED_WHILE_SHOOTING = 200f;
     const float MAX_SPEED = 450f;
     const float STOPPED = 0f;
     public float Health { get; private set;} = 100f;
@@ -46,13 +52,17 @@ public class Player : Sprite
     public bool IsWalking {get; private set;} = false;
     public bool IsStopped {get; private set;} = true;
     public bool IsRunning {get; private set;} = false;
+    public bool IsShooting {get; private set;} = false;
     
     
 
     public Player(Vector2 initialPosition) : base (initialPosition, SPEED_INIT)
     {
         speed = SPEED_INIT;
-        Gun = new Pistol();
+        Arsenal[0] = new MarksmanRifle();   // Slot Primário (ArmaLonga)
+        Arsenal[1] = new Pistol(); // Slot Secundário (Pistola)
+        switchGun_Sound = Raylib.LoadSound(Path.Combine("audio", "sfx", "SwitchWeapons","wpn_hudon.wav"));
+        Raylib.SetSoundVolume(switchGun_Sound, 0.8f);
         RenderTexture2D playerTexture = Raylib.LoadRenderTexture(64,64);
         /*OLD TEXTURES
         texFrontIdle = Raylib.LoadTexture(Path.Combine("sprites", "player_char", "front", "Bowllingguychibi-Idle.png"));
@@ -85,18 +95,19 @@ public class Player : Sprite
     */
 
 
-    public void Update(InventoryUI inventory, Camera2D camera)
+    public void Update(InventoryUI inventory, Camera2D camera, float angleRad)
     {
         isAlive = Health > 0f;
         if(!isAlive) return;
+        float deltaTime = Raylib.GetFrameTime();
         
         if(Raylib.IsKeyPressed(KeyboardKey.F)) // For testing purposes only
             Health -= 2f;
         
-        
-        const float ACCELERATION = 800f;
-        const float DECELERATION = 1200f;
-        float deltaTime = Raylib.GetFrameTime();
+        if (Raylib.IsKeyPressed(KeyboardKey.One)) SwitchGun(CurrentSlot==0 ? 1:0);
+        if (Raylib.IsKeyPressed(KeyboardKey.Two)) SwitchGun(CurrentSlot==1 ? 1:0);
+        if (Raylib.IsKeyPressed(KeyboardKey.Three)) SwitchGun(2);
+        if (Raylib.IsKeyPressed(KeyboardKey.R) && EquippedWeapon != null) EquippedWeapon.Reload();
         
         direction.X = (Raylib.IsKeyDown(KeyboardKey.D) ? 1:0) - (Raylib.IsKeyDown(KeyboardKey.A) ? 1:0); 
         direction.Y = (Raylib.IsKeyDown(KeyboardKey.S) ? 1:0) - (Raylib.IsKeyDown(KeyboardKey.W) ? 1:0);
@@ -105,12 +116,69 @@ public class Player : Sprite
         HaveStamina = Stamina>0;
         NoStamina = Stamina<=0;
 
-        IsRunning = HaveStamina && direction!=Vector2.Zero && Raylib.IsKeyDown(KeyboardKey.LeftShift);
+        IsShooting = direction!=Vector2.Zero;
+        IsRunning = HaveStamina && direction!=Vector2.Zero && Raylib.IsKeyDown(KeyboardKey.LeftShift) && !IsShooting;
         IsWalking = direction!=Vector2.Zero && !IsRunning;
         IsStopped = direction==Vector2.Zero;
 
-        float TargetSpeed = IsRunning ? MAX_SPEED : SPEED_INIT;
+        MovementPhysics(deltaTime);
         
+        /* OLD ANIMATIONS
+        if(IsStopped) {Animation(deltaTime, ref idleFrame);}
+        if (direction.Y > 0 && IsWalking) {Animation(deltaTime, ref walkFrame);}
+        if (direction.Y < 0 && IsWalking) {Animation(deltaTime, ref walkFrame);}
+        if (direction.Y > 0 && IsRunning) {Animation(deltaTime, ref runFrames);}
+        if (direction.Y < 0 && IsRunning) {Animation(deltaTime, ref runFrames);}
+        */
+
+        Move(deltaTime);
+        Vector2 screenMouse = Raylib.GetMousePosition();
+        Vector2 offsetGunBarrel= new Vector2(10f, -5f);
+        Vector2 originFire = GetPosition() + offsetGunBarrel;
+        Vector2 worldMouse = Raylib.GetScreenToWorld2D(screenMouse, camera);
+        
+        float adjustedAngle = angleRad - (MathF.PI / 2f);
+        
+        if (EquippedWeapon != null)
+        {
+            EquippedWeapon.Update(deltaTime);
+            // Sistema de Tiro usando ScreenToWorld2D (como conversamos antes)
+            if (Raylib.IsMouseButtonDown(MouseButton.Left)) // Usando 'Down' permite atirar segurando o botão
+            {
+                EquippedWeapon.Fire(originFire, worldMouse);
+                speed = SPEED_WHILE_SHOOTING;
+
+            }
+        }
+    }
+    
+    private void SwitchGun(int novoSlot)
+    {
+        // Verifica se existe uma arma cadastrada neste slot (evita crash do jogo)
+        if (Arsenal[novoSlot] != null) 
+        {
+            CurrentSlot = novoSlot;
+            Raylib.PlaySound(switchGun_Sound);
+        }
+    }
+
+    
+    /* TO SWITCH FIRE MODE SOON
+    private void SwitchFireMode(FireMode _firemode, int slot)
+    {
+        // Verifica se existe uma arma cadastrada neste slot (evita crash do jogo)
+        if (Arsenal[slot] != null) 
+        {
+            _firemode = FireMode.Semi_Auto;
+        } 
+    }
+    */
+
+    public void MovementPhysics(float deltaTime)
+    {
+        const float ACCELERATION = 800f;
+        const float DECELERATION = 1200f;
+        float TargetSpeed = IsRunning ? MAX_SPEED : SPEED_INIT;
         if(IsStopped)
             speed = Math.Max(0, speed - DECELERATION * deltaTime); 
         else
@@ -133,30 +201,6 @@ public class Player : Sprite
                 Stamina = Math.Min(MAX_STAMINA, Stamina + regenRate * deltaTime);
             }
         }
-
-
-        /* OLD ANIMATIONS
-        if(IsStopped) {Animation(deltaTime, ref idleFrame);}
-        if (direction.Y > 0 && IsWalking) {Animation(deltaTime, ref walkFrame);}
-        if (direction.Y < 0 && IsWalking) {Animation(deltaTime, ref walkFrame);}
-        if (direction.Y > 0 && IsRunning) {Animation(deltaTime, ref runFrames);}
-        if (direction.Y < 0 && IsRunning) {Animation(deltaTime, ref runFrames);}
-        */
-
-        Move(deltaTime);
-        Vector2 screenMouse = Raylib.GetMousePosition();
-        Vector2 offsetGunBarrel= new Vector2(10f, -5f);
-        Vector2 originFire = GetPosition() + offsetGunBarrel;
-        Vector2 worldMouse = Raylib.GetScreenToWorld2D(screenMouse, camera);
-      
-        if (Raylib.IsMouseButtonPressed(MouseButton.Left))
-        {
-            Gun.Atirar(originFire, worldMouse);
-            
-        }
-
-        Gun.Update(deltaTime);
-        
     }
 
     public Vector2 GetPosition()
@@ -169,7 +213,8 @@ public class Player : Sprite
         if(!isAlive) return;
         
         SkinPlayer(angleRad);
-        Gun.Draw();
+        EquippedWeapon.Draw();
+
         /* OLD ANIMATIONS (sprites)
         float frameWidthFront = texFrontIdle.Width / (float)totalFrames;
         float frameHeightFront = texFrontIdle.Height;
@@ -199,7 +244,7 @@ public class Player : Sprite
        
     }
 
- 
+    
     public void SkinPlayer(float angleRad)
     {
         
@@ -229,7 +274,7 @@ public class Player : Sprite
             leftOffset.X * sin + leftOffset.Y * cos
         );
 
-        // 5. Adds the player's current position to obtain the actual world coordinates.
+        // Adds the player's current position to obtain the actual world coordinates.
         Vector2 RightHandPos = pos + rotatedRight;
         Vector2 LeftHandPos = pos + rotatedLeft;
 
