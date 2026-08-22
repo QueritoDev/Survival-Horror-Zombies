@@ -16,6 +16,8 @@ public class Player : Sprite
     
     texSide, texBackIdle, texBackWalking, texBackRunning;
     protected Sound switchGun_Sound;
+    protected Sound UI_WarningMsg;
+    protected bool WarningLowAmmo = false;
     float angleDeg = 0f;
     int idleFrame = 0;
     int walkFrame = 0;
@@ -43,17 +45,17 @@ public class Player : Sprite
     bool HaveStamina = true;
     bool NoStamina = false;
     
-    const float SPEED_INIT = 350f;
-    const float SPEED_WHILE_SHOOTING = 200f;
-    const float MAX_SPEED = 450f;
+    const float SPEED_INIT = 300f;
+    const float SPEED_WHILE_SHOOTING = 120f;
+    const float MAX_SPEED = 400f;
     const float STOPPED = 0f;
     public float Health { get; private set;} = 100f;
     public bool isAlive = true;
     public bool IsWalking {get; private set;} = false;
     public bool IsStopped {get; private set;} = true;
     public bool IsRunning {get; private set;} = false;
-    public bool IsShooting {get; private set;} = false;
-    
+    private Vector2 WeaponStartPos;
+    private Vector2 WeaponEndPos;
     
 
     public Player(Vector2 initialPosition) : base (initialPosition, SPEED_INIT)
@@ -61,8 +63,11 @@ public class Player : Sprite
         speed = SPEED_INIT;
         Arsenal[0] = new MarksmanRifle();   // Slot Primário (ArmaLonga)
         Arsenal[1] = new Pistol(); // Slot Secundário (Pistola)
+        
+        UI_WarningMsg = Raylib.LoadSound(Path.Combine("audio","sfx","UI_WarningMsg.wav"));
         switchGun_Sound = Raylib.LoadSound(Path.Combine("audio", "sfx", "SwitchWeapons","wpn_hudon.wav"));
         Raylib.SetSoundVolume(switchGun_Sound, 0.8f);
+        
         RenderTexture2D playerTexture = Raylib.LoadRenderTexture(64,64);
         /*OLD TEXTURES
         texFrontIdle = Raylib.LoadTexture(Path.Combine("sprites", "player_char", "front", "Bowllingguychibi-Idle.png"));
@@ -101,13 +106,12 @@ public class Player : Sprite
         if(!isAlive) return;
         float deltaTime = Raylib.GetFrameTime();
         
-        if(Raylib.IsKeyPressed(KeyboardKey.F)) // For testing purposes only
-            Health -= 2f;
-        
         if (Raylib.IsKeyPressed(KeyboardKey.One)) SwitchGun(CurrentSlot==0 ? 1:0);
         if (Raylib.IsKeyPressed(KeyboardKey.Two)) SwitchGun(CurrentSlot==1 ? 1:0);
         if (Raylib.IsKeyPressed(KeyboardKey.Three)) SwitchGun(2);
         if (Raylib.IsKeyPressed(KeyboardKey.R) && EquippedWeapon != null) EquippedWeapon.Reload();
+        
+        WarningLowAmmo = EquippedWeapon !=null && EquippedWeapon.TotalAmmo<5;
         
         direction.X = (Raylib.IsKeyDown(KeyboardKey.D) ? 1:0) - (Raylib.IsKeyDown(KeyboardKey.A) ? 1:0); 
         direction.Y = (Raylib.IsKeyDown(KeyboardKey.S) ? 1:0) - (Raylib.IsKeyDown(KeyboardKey.W) ? 1:0);
@@ -115,13 +119,14 @@ public class Player : Sprite
         if(inventory.InvIsShow) {direction=Vector2.Zero;} // The player must be stopped when open inventory XD
         HaveStamina = Stamina>0;
         NoStamina = Stamina<=0;
-
-        IsShooting = direction!=Vector2.Zero;
-        IsRunning = HaveStamina && direction!=Vector2.Zero && Raylib.IsKeyDown(KeyboardKey.LeftShift) && !IsShooting;
+        
+        IsRunning = HaveStamina && direction!=Vector2.Zero && Raylib.IsKeyDown(KeyboardKey.LeftShift) && !Raylib.IsMouseButtonDown(MouseButton.Left);
         IsWalking = direction!=Vector2.Zero && !IsRunning;
         IsStopped = direction==Vector2.Zero;
 
+        
         MovementPhysics(deltaTime);
+        Move(deltaTime);
         
         /* OLD ANIMATIONS
         if(IsStopped) {Animation(deltaTime, ref idleFrame);}
@@ -131,27 +136,34 @@ public class Player : Sprite
         if (direction.Y < 0 && IsRunning) {Animation(deltaTime, ref runFrames);}
         */
 
-        Move(deltaTime);
+        
         Vector2 screenMouse = Raylib.GetMousePosition();
-        Vector2 offsetGunBarrel= new Vector2(10f, -5f);
-        Vector2 originFire = GetPosition() + offsetGunBarrel;
+        Vector2 offsetGunBarrel = WeaponEndPos;
+        Vector2 originFire = GetPosition();
         Vector2 worldMouse = Raylib.GetScreenToWorld2D(screenMouse, camera);
         
         float adjustedAngle = angleRad - (MathF.PI / 2f);
-        
         if (EquippedWeapon != null)
         {
             EquippedWeapon.Update(deltaTime);
-            // Sistema de Tiro usando ScreenToWorld2D (como conversamos antes)
+            // Sistema de Tiro usando ScreenToWorld2D
             if (Raylib.IsMouseButtonDown(MouseButton.Left)) // Usando 'Down' permite atirar segurando o botão
             {
-                EquippedWeapon.Fire(originFire, worldMouse);
+                EquippedWeapon.Fire(offsetGunBarrel, worldMouse);
                 speed = SPEED_WHILE_SHOOTING;
-
+            }
+            
+            if(WarningLowAmmo)
+            {
+                Raylib.PlaySound(UI_WarningMsg);
+                WarningLowAmmo = true;
+                if(Raylib.IsKeyPressed(KeyboardKey.J))
+                {
+                    EquippedWeapon.RestoreMaxAmmo();
+                }
             }
         }
     }
-    
     private void SwitchGun(int novoSlot)
     {
         // Verifica se existe uma arma cadastrada neste slot (evita crash do jogo)
@@ -166,7 +178,7 @@ public class Player : Sprite
     /* TO SWITCH FIRE MODE SOON
     private void SwitchFireMode(FireMode _firemode, int slot)
     {
-        // Verifica se existe uma arma cadastrada neste slot (evita crash do jogo)
+        // Verifica se existe uma arma cadastrada neste slot
         if (Arsenal[slot] != null) 
         {
             _firemode = FireMode.Semi_Auto;
@@ -186,7 +198,7 @@ public class Player : Sprite
 
         if(IsRunning)
         {
-            Stamina = Math.Max(0, Stamina - timerStamina * deltaTime); // trava em 0, nunca negativo
+            Stamina = Math.Max(0, Stamina - timerStamina * deltaTime);
             staminaRegenTimer = STAMINA_REGEN_DELAY;
         }
         else
@@ -207,6 +219,29 @@ public class Player : Sprite
     {
         return this.pos;
     }
+
+    public void TakeDamage(float amount)
+    {
+        Health = Math.Max(0, Health - amount);
+    }
+
+    /* CRASHING
+    public int GetTotalAmmo()
+    {
+        return Arsenal[0].CurrentAmmo + Arsenal[1].CurrentAmmo + Arsenal[2].CurrentAmmo;
+    }
+
+    public void DropMaxAmmo()
+    {
+        if(GetTotalAmmo()<25)
+        {
+            for(int i = 0; i <= Arsenal.Length; i++)
+            {
+                Arsenal[i].RestoreMaxAmmo();
+            }
+        }
+    }
+    */
 
     public void Draw(float angleRad)
     {
@@ -245,6 +280,7 @@ public class Player : Sprite
     }
 
     
+
     public void SkinPlayer(float angleRad)
     {
         
@@ -252,40 +288,80 @@ public class Player : Sprite
         Raylib.DrawCircleV(pos, 26f, Raylib.Fade(Color.Black, 0.4f)); //Shadow player
         Raylib.DrawCircleV(pos, 24f, Color.Black); // Stroke effect
         Raylib.DrawCircleV(pos, 22f, Color.Beige); // Skin player
-
+        
+        Vector2 rightHandOffset = Vector2.Zero;
+        Vector2 leftHandOffset = Vector2.Zero;
+        Vector2 weaponStartOffset = Vector2.Zero;
+        Vector2 weaponEndOffset = Vector2.Zero;
         // Distance between hands
-        Vector2 rightOffset = new Vector2(-10f, 19f);
-        Vector2 leftOffset = new Vector2(10f, 19f);
+        TypeGrip CurrentGrip = EquippedWeapon != null ? EquippedWeapon.Grip : TypeGrip.Knife;
+        
+        switch(CurrentGrip)
+        {
+            case TypeGrip.Pistol:
+                weaponStartOffset = new Vector2(0f, 22f);
+                weaponEndOffset = new Vector2(0f, 45f);
+                rightHandOffset = new Vector2(-6f, 22f);
+                leftHandOffset = new Vector2(-6f, 22f);
+            break;
+
+            case TypeGrip.LongGun:
+                weaponStartOffset = new Vector2(-5f, 15f);
+                weaponEndOffset = new Vector2(-5f, 52f);
+                rightHandOffset = new Vector2(-8f, 15f);
+                leftHandOffset = new Vector2(-10f, 40f);
+            break;
+
+            case TypeGrip.Knife:
+            default:
+                rightHandOffset = new Vector2(-10f, 19f);
+                leftHandOffset = new Vector2(10f, 19f);
+            break;
+        }
+        
 
         float adjustedAngle = angleRad - (MathF.PI / 2f);
 
         // Sin and Cos of Angle
         float cos = MathF.Cos(adjustedAngle);
         float sin = MathF.Sin(adjustedAngle);
-
+        
         // Rotate the displacement points around the center (0,0)
-        Vector2 rotatedRight = new Vector2(
-            rightOffset.X * cos - rightOffset.Y * sin,
-            rightOffset.X * sin + rightOffset.Y * cos
+        Vector2 RotateOffset(Vector2 offset)
+        {
+        return new Vector2(
+            offset.X * cos - offset.Y * sin,
+            offset.X * sin + offset.Y * cos
         );
-
-        Vector2 rotatedLeft = new Vector2(
-            leftOffset.X * cos - leftOffset.Y * sin,
-            leftOffset.X * sin + leftOffset.Y * cos
-        );
-
-        // Adds the player's current position to obtain the actual world coordinates.
-        Vector2 RightHandPos = pos + rotatedRight;
-        Vector2 LeftHandPos = pos + rotatedLeft;
+        }
+       
+        Vector2 RightHandPos = pos + RotateOffset(rightHandOffset);
+        Vector2 LeftHandPos = pos + RotateOffset(leftHandOffset);
+        WeaponStartPos = pos + RotateOffset(weaponStartOffset);
+        WeaponEndPos = pos + RotateOffset(weaponEndOffset);
+        
+        DrawGunOnHand();
 
         // Draw the hands in the newly recalculated positions
-        
-        Raylib.DrawRing(RightHandPos, 5f, 8f, 0f, 360f, 16, Color.Black); // Shadow Right-Hand
-        Raylib.DrawCircleV(RightHandPos, 6f, Color.Beige); // Right Hand
+        Raylib.DrawRing(RightHandPos, 4f, 7.2f, 0f, 360f, 16, Color.Black); // Shadow Right-Hand
+        Raylib.DrawCircleV(RightHandPos, 5f, Color.Beige); // Right Hand
 
-        Raylib.DrawRing(LeftHandPos, 5f, 8f, 0f, 360f, 16, Color.Black); // Shadow Left-Hand
-        Raylib.DrawCircleV(LeftHandPos, 6f, Color.Beige); // Left Hand
+        Raylib.DrawRing(LeftHandPos, 4f, 7.2f, 0f, 360f, 16, Color.Black); // Shadow Left-Hand
+        Raylib.DrawCircleV(LeftHandPos, 5f, Color.Beige); // Left Hand
     }   
+
+    
+    public void DrawGunOnHand()
+    {
+        if (EquippedWeapon != null)
+        {
+        // Linha preta mais grossa por baixo (Cria o efeito de borda/stroke igual ao do boneco)
+        Raylib.DrawLineEx(WeaponStartPos, WeaponEndPos, 6f, Color.Black);
+        
+        // Linha cinza ligeiramente mais fina por cima (Corpo real da arma)
+        Raylib.DrawLineEx(WeaponStartPos, WeaponEndPos, 2f, Color.DarkGray);
+        }
+    }
 
 
     public void UnloadEverything()

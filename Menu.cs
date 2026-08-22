@@ -21,6 +21,12 @@ public static class MainMenu
     {
         if(GameManager.CurrentState!=GameState.MainMenu) return;
         Raylib.ClearBackground(Color.Black);
+        Raylib.DrawText("WASD - Movement", 350,120, 50,Color.LightGray);
+        Raylib.DrawText("Shift - Run", 350,170, 50,Color.LightGray);
+        Raylib.DrawText("1 - Switch Weapons", 350,210, 50,Color.LightGray);
+        Raylib.DrawText("R - Reload Equipped Gun", 350,250, 50,Color.LightGray);
+        Raylib.DrawText("Mouse - Aim", 350,290, 50,Color.LightGray);
+        Raylib.DrawText("Mouse Button Left - Fire", 350,330, 50,Color.LightGray);
         Raylib.DrawText("Press enter to play", 510,650, 30,Color.LightGray);
     }
 }

@@ -60,8 +60,7 @@ namespace ZombieShooter
             switch (State)
             {
                 case WaveState.Intermission:
-                    UpdateIntermission(deltaTime);
-                        
+                    UpdateIntermission(deltaTime);                        
                     break;
                 case WaveState.Spawning:
                     UpdateSpawning(deltaTime);

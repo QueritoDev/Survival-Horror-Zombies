@@ -22,7 +22,7 @@ public static class Program
 
         Raylib.InitWindow(screenWidth, screenHeight, "Survival Horror - Learning");
         Raylib.InitAudioDevice();
-        Raylib.SetTargetFPS(1000);
+        Raylib.SetTargetFPS(120);
         Raylib.SetExitKey(KeyboardKey.Null);
         
         rlImGui.Setup();
@@ -83,7 +83,7 @@ public static class Program
                 Vector2 playerScreenPos = Raylib.GetWorldToScreen2D(rbz.pos, cam);
                 playerScreenPos.Y = 720 - playerScreenPos.Y;
                 lightShader.SetVector2("playerScreenPos", playerScreenPos);
-                lightShader.SetFloat("lightRadius", 620f);
+                lightShader.SetFloat("lightRadius", 490f);
                 
                 Raylib.BeginTextureMode(canvas);
                     Raylib.ClearBackground(Color.White);
@@ -118,7 +118,6 @@ public static class Program
                 DebugGame.OpenWindow();
                 DebugGame.PlayerSection(rbz.speed, rbz.Health, rbz.Stamina, rbz.IsStopped, rbz.IsWalking, rbz.IsRunning, rbz.pos);
                 DebugGame.InputSection(rbz.direction);
-                ImGui.Text($"Current GameState: {GameManager.CurrentState}");
                 DebugGame.CloseWindow();
             rlImGui.End();
             Raylib.DrawFPS(screenWidth-82,0);

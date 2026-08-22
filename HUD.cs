@@ -7,7 +7,6 @@ public class HUD
 {   
     Font RequiemFont;
     Texture2D Glock;
-    
     public HUD()
     {
         Glock = Raylib.LoadTexture(Path.Combine("sprites","Guns", "glock_p80.png"));
@@ -18,7 +17,7 @@ public class HUD
     {
         const float MAX_STAMINA = 100f;
         const float MAX_HEALTH = 100f;
-        Vector2 radialGauge_Position = new Vector2(1160,630);
+        Vector2 radialGauge_Position = new Vector2(1150,570);
         
         DrawStaminaBAR(MAX_STAMINA, _player.Stamina);
         DrawRadialGauge(radialGauge_Position, _player, MAX_HEALTH);
@@ -27,18 +26,18 @@ public class HUD
     public void DrawStaminaBAR(float _STAMINA_MAX, float _staminaActual)
     {
     if(GameManager.CurrentState!=GameState.Playing) return;
-    float barX = 50.0f;
+    float barX = 1075.0f;
     float barY = 680.0f;
     float barMaxWidth = 200.0f;
     float barMaxHeight = 30.0f;
     float proportionalWidth = barMaxWidth * (_staminaActual / _STAMINA_MAX);
     
     Rectangle borderRec =  new Rectangle(barX,barY, barMaxWidth, barMaxHeight);
-    Raylib.DrawText($"Stamina: {(int)_staminaActual}", 50, 655, 28, Color.Black);
+    Raylib.DrawText("Stamina", 1155, 650, 32, Color.White);
     Raylib.DrawRectangle((int)barX, (int)barY, (int)barMaxWidth, (int)barMaxHeight, Color.DarkGray);
-    Raylib.DrawRectangle((int)barX, (int)barY, (int)proportionalWidth, (int)barMaxHeight, Color.Blue);
+    Raylib.DrawRectangle((int)barX, (int)barY, (int)proportionalWidth, (int)barMaxHeight, Color.Orange);
     Raylib.DrawRectangleLines((int)barX, (int)barY, (int)barMaxWidth, (int)barMaxHeight, Color.Black);
-    Raylib.DrawRectangleLinesEx(borderRec, 3f, Color.DarkBlue);
+    Raylib.DrawRectangleLinesEx(borderRec, 3f, Color.DarkPurple);
     }
 
     public void DrawRadialGauge (Vector2 _center, Player _player, float maxValue)
@@ -86,6 +85,7 @@ public class HUD
         
         int offsetShadow = 2;
         float fontSize = 34f;
+        
         float scaleImage = 2.6f;
         Vector2 ammo_TextPos = new Vector2(gunPos.X+78, gunPos.Y+46);
         Vector2 shadow_AmmoText = new Vector2(ammo_TextPos.X, ammo_TextPos.Y+offsetShadow);
@@ -115,6 +115,27 @@ public class HUD
         Raylib.DrawTextureEx(_gun.Icon, gunPos, 0, scaleImage, Color.White);
         Raylib.DrawTextEx(Fonts.Montserrat_SemiBoldItalic, $"{_gun.CurrentAmmo}/{_gun.TotalAmmo}", shadow_AmmoText, fontSize+1f, 0f, Color.Black);
         Raylib.DrawTextEx(Fonts.Montserrat_SemiBoldItalic, $"{_gun.CurrentAmmo}/{_gun.TotalAmmo}", ammo_TextPos, fontSize, 0f, Color.White);
+
+        DrawWarningAmmo(_gun);
+    }
+
+    public void DrawWarningAmmo(Gun _gun)
+    {
+        string Warning_AmmoText = "Press J to Restore the ammo of your Gun!";
+        int warning_fontSize = 26;
+        int width_Text = Raylib.MeasureText(Warning_AmmoText, 20);
+        int warningAmmoTextX = (Raylib.GetScreenWidth() - width_Text) / 2;
+        int warningAmmoTextY = (Raylib.GetScreenWidth() - warning_fontSize) / 2;
+        
+        if(_gun.GetTotalAmmo()<2)
+        {
+            
+            if(_gun.GetTotalAmmo()>2) return;
+            
+            Vector2 WarningTextPos = new Vector2(warningAmmoTextX,warningAmmoTextY);
+            Raylib.DrawTextEx(Fonts.Montserrat_SemiBold, Warning_AmmoText, WarningTextPos, warning_fontSize, 0, Color.Green);
+            
+        }
     }
     public void Unload(Player _player)
     {

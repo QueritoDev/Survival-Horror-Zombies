@@ -1,5 +1,6 @@
 using System;
 using System.Numerics;
+using Players;
 using Raylib_cs;
 
 namespace ZombieShooter
@@ -13,6 +14,7 @@ namespace ZombieShooter
         public Vector2 Position { get; private set; }
         public float Speed { get; }
         public float Health { get; private set; }
+        public float Damage { get; private set; }
         public bool IsAlive => Health > 0;
 
         public Zombie(Vector2 spawnPosition, float health, float speed)
@@ -20,6 +22,7 @@ namespace ZombieShooter
             Position = spawnPosition;
             Health = health;
             Speed = speed;
+            Damage = 35;
         }
 
         public void Update(float deltaTime, Vector2 targetPosition)
@@ -39,6 +42,11 @@ namespace ZombieShooter
         public void TakeDamage(int amount)
         {
             Health = Math.Max(0, Health - amount);
+        }
+
+        public float Attack(float dt)
+        {
+            return Damage * dt;
         }
 
         public void Push(Vector2 offset)

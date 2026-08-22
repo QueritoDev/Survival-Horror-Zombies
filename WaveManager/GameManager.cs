@@ -14,7 +14,6 @@ namespace ZombieShooter
         private readonly List<SpawnPoint> spawnPoints;
         private readonly WaveManager waveManager;
         private Vector2 playerPosition;
-        
         private Sound Start_Round;
         private Sound Round_Change;
         private bool playedStartSound = false;
@@ -58,10 +57,13 @@ namespace ZombieShooter
             playerPosition = player.GetPosition();
             waveManager.Update(deltaTime);
             
-            
             foreach (Zombie zombie in activeZombies)
             {
                 zombie.Update(deltaTime, playerPosition);
+                if (Raylib.CheckCollisionCircles(player.pos, 22f, zombie.Position, Zombie.Radius))
+                {
+                    player.TakeDamage(zombie.Attack(deltaTime)); // Exemplo: 25 de dano
+                }
             }
             ResolveZombieCollisions();
             
@@ -72,7 +74,7 @@ namespace ZombieShooter
                 foreach (var zombie in activeZombies)
                 {
                     if (!zombie.IsAlive) continue; // Ignora zumbis mortos
-
+                    
                     // Checa a colisão circular entre a bala e o Zombie.Radius
                     if (Raylib.CheckCollisionCircles(bullet.Position, bullet.Radius, zombie.Position, Zombie.Radius))
                     {
@@ -80,6 +82,7 @@ namespace ZombieShooter
                         bullet.Active = false;    // Destrói a bala
                         break;                 // Uma bala não atravessa múltiplos zumbis
                     }
+
                 }
             }
             // remove zumbis mortos da lista (é essa lista que o WaveManager observa)

@@ -11,6 +11,7 @@ public class Pistol : Gun
         MagazineSize = 7;
         CurrentAmmo = 7;
         TotalAmmo = 28;
+        MaxAmmo = 28;
         TimeBetweenFires = 0.3f;
         Sound_Fire = Raylib.LoadSound(Path.Combine("audio","sfx","Weapons", "Glock-17-HL1", "pistol_fire.wav"));
     }

@@ -27,6 +27,7 @@ public abstract class Gun
     public int CurrentAmmo {get; protected set;}
     public int MagazineSize {get; protected set;}
     public int TotalAmmo {get; protected set;}
+    public int MaxAmmo { get; protected set; }
     
     //Fire rate control
     public float TimeBetweenFires {get; protected set;}
@@ -63,13 +64,23 @@ public abstract class Gun
     
     public void PlaySoundFire()
     {
-        float randomPitchModifier = Raylib.GetRandomValue(-12, 10) / 100f;
+        float randomPitchModifier = Raylib.GetRandomValue(-10, 10) / 100f;
         float newPitch = 1.0f + randomPitchModifier;
-        float newVolume = Raylib.GetRandomValue(80, 90) / 100f;
+        float newVolume = Raylib.GetRandomValue(60, 70) / 100f;
 
         Raylib.SetSoundPitch(Sound_Fire, newPitch);
         Raylib.SetSoundVolume(Sound_Fire, newVolume);
         Raylib.PlaySound(Sound_Fire);
+    }
+
+    public void RestoreMaxAmmo()
+    {
+        TotalAmmo = MaxAmmo;
+    }
+
+    public int GetTotalAmmo()
+    {
+        return TotalAmmo;
     }
 
     public void Reload()
@@ -77,6 +88,7 @@ public abstract class Gun
         
         int ammoNeeded = MagazineSize - CurrentAmmo; //Calculates how much is needed to fill the magazine
         int ammoToLoad = Math.Min(ammoNeeded, TotalAmmo); // Checks if the inventory has what we need (or uses what remains)
+        Raylib.SetSoundVolume(reloadGun, 0.6f);
         
         if(ammoToLoad>0) 
         {
@@ -114,6 +126,7 @@ public abstract class Gun
 
     public virtual void Draw()
     {
+        
         foreach (var projetil in Projeteis)
         {
             projetil.Draw();

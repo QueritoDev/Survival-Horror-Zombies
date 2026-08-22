@@ -6,8 +6,8 @@ public class Projetil
     
     public Vector2 Position { get; private set; }
     public Vector2 Direction { get; private set; }
-    public float Speed { get; private set; } = 1200f;
-    public float Radius { get; private set; } = 4f;
+    public float Speed { get; private set; } = 800f;
+    public float Radius { get; private set; } = 5f;
     public bool Active { get; set; } = true;
 
     private float lifeSpan = 4f;

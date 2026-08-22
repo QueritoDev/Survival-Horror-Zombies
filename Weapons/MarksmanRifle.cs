@@ -10,6 +10,7 @@ public class MarksmanRifle : Gun
         MagazineSize = 30;
         CurrentAmmo = 30;
         TotalAmmo = 90;
+        MaxAmmo = 90;
         TimeBetweenFires = 0.10f;
         Sound_Fire = Raylib.LoadSound(Path.Combine("audio","sfx","Weapons", "MK14", "MK14_SemiAuto_Fire.wav"));
     }

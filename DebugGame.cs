@@ -20,8 +20,9 @@ public class DebugGame
 
     public static void PlayerSection(float speed, float health, float _stamina, bool _stop, bool _walk, bool _run, Vector2 pos)
     {
+        if(!isShowDebug) return;
         if(ImGui.CollapsingHeader("Player Info"))
-        {
+        {    
             ImGui.Text($"Speed: {speed}");
             ImGui.Text($"Health: {health}");
             ImGui.Text($"Stamina: {_stamina}");
@@ -33,6 +34,7 @@ public class DebugGame
 
     public static void EnemySection(float health)
     {
+        if(!isShowDebug) return;
         if(ImGui.CollapsingHeader("Enemy Info"))
         {        
             ImGui.Text($"Health: {health}");
@@ -41,6 +43,7 @@ public class DebugGame
 
     public static void InputSection(Vector2 _direction)
     {
+        if(!isShowDebug) return;
         if(ImGui.CollapsingHeader("Player INPUT"))
         {
         ImGui.Text($"Key pressed");
