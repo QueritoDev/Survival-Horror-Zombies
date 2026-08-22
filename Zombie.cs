@@ -28,7 +28,6 @@ namespace ZombieShooter
         public void Update(float deltaTime, Vector2 targetPosition)
         {
             if (!IsAlive) return;
-
             Vector2 toTarget = targetPosition - Position;
             float distance = toTarget.Length();
 
@@ -57,6 +56,7 @@ namespace ZombieShooter
         public void Draw()
         {
             if (!IsAlive) return;
+            Raylib.DrawCircleV(Position, Radius+1, Color.Black);
             Raylib.DrawCircleV(Position, Radius, Color.Green);
         }
     }

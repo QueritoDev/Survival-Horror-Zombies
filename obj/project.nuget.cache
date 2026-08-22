@@ -1,18 +1,14 @@
 {
   "version": 2,
-  "dgSpecHash": "+YbH05M3JII=",
+  "dgSpecHash": "Xyw1Ax7/I4A=",
   "success": true,
   "projectFilePath": "C:\\Users\\RbzAly\\Documents\\Projeto_Programacao\\Survival Horror - WIP\\Survival-Horror.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\RbzAly\\.nuget\\packages\\imgui.net\\1.91.6.1\\imgui.net.1.91.6.1.nupkg.sha512",
-    "C:\\Users\\RbzAly\\.nuget\\packages\\microsoft.net.illink.tasks\\10.0.10\\microsoft.net.illink.tasks.10.0.10.nupkg.sha512",
     "C:\\Users\\RbzAly\\.nuget\\packages\\newtonsoft.json\\13.0.3\\newtonsoft.json.13.0.3.nupkg.sha512",
     "C:\\Users\\RbzAly\\.nuget\\packages\\raygui-cs\\2.0.5\\raygui-cs.2.0.5.nupkg.sha512",
     "C:\\Users\\RbzAly\\.nuget\\packages\\raylib-cs\\8.0.0\\raylib-cs.8.0.0.nupkg.sha512",
-    "C:\\Users\\RbzAly\\.nuget\\packages\\rlimgui-cs\\3.2.0\\rlimgui-cs.3.2.0.nupkg.sha512",
-    "C:\\Users\\RbzAly\\.nuget\\packages\\microsoft.netcore.app.runtime.win-x64\\10.0.10\\microsoft.netcore.app.runtime.win-x64.10.0.10.nupkg.sha512",
-    "C:\\Users\\RbzAly\\.nuget\\packages\\microsoft.windowsdesktop.app.runtime.win-x64\\10.0.10\\microsoft.windowsdesktop.app.runtime.win-x64.10.0.10.nupkg.sha512",
-    "C:\\Users\\RbzAly\\.nuget\\packages\\microsoft.aspnetcore.app.runtime.win-x64\\10.0.10\\microsoft.aspnetcore.app.runtime.win-x64.10.0.10.nupkg.sha512"
+    "C:\\Users\\RbzAly\\.nuget\\packages\\rlimgui-cs\\3.2.0\\rlimgui-cs.3.2.0.nupkg.sha512"
   ],
   "logs": []
 }

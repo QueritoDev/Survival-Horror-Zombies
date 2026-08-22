@@ -19,9 +19,14 @@ public static class Program
         const int screenWidth = 1280;
         const int screenHeight = 720;
         
-
+        
         Raylib.InitWindow(screenWidth, screenHeight, "Survival Horror - Learning");
+        Image windowIcon = Raylib.LoadImage(Path.Combine("./zombiesIcon.png"));
+        Raylib.SetWindowIcon(windowIcon);
+        Raylib.UnloadImage(windowIcon);
         Raylib.InitAudioDevice();
+        
+        
         Raylib.SetTargetFPS(120);
         Raylib.SetExitKey(KeyboardKey.Null);
         
@@ -30,6 +35,8 @@ public static class Program
         float halfSizeOfCursor = cursorTexture.Width / 2.4f;
         Vector2 cursorPosition;
         HUD _Hud = new HUD();
+        
+        
         
         Player rbz = new Player(new Vector2(500,500));
         ManagerGame game = new ManagerGame();
@@ -62,7 +69,6 @@ public static class Program
             switch(GameManager.CurrentState) 
             {
             case GameState.Playing:
-                
                 inventoryUI.Update(dt);
                 inventoryUI.Input();
                 rbz.Update(inventoryUI, cam, angleRad);
@@ -83,14 +89,16 @@ public static class Program
                 Vector2 playerScreenPos = Raylib.GetWorldToScreen2D(rbz.pos, cam);
                 playerScreenPos.Y = 720 - playerScreenPos.Y;
                 lightShader.SetVector2("playerScreenPos", playerScreenPos);
-                lightShader.SetFloat("lightRadius", 490f);
+                lightShader.SetFloat("lightRadius", 500f);
                 
                 Raylib.BeginTextureMode(canvas);
-                    Raylib.ClearBackground(Color.White);
+                    Raylib.ClearBackground(Color.DarkGray);
+                    
                     Raylib.BeginMode2D(cam);
+                        DrawGridMesh();
                         rbz.Draw(angleRad);
                         game.Draw();
-                    Raylib.DrawText("Hello, world!", 400, 400, 20, Color.Black);
+                    Raylib.DrawText("Hello, world!", 400, 400, 20, Color.Yellow);
                     Raylib.EndMode2D();
                 Raylib.EndTextureMode();
             }
@@ -131,5 +139,24 @@ public static class Program
         _Hud.Unload(rbz);
         rlImGui.Shutdown();
         Raylib.CloseWindow();
+    }
+
+    public static void DrawGridMesh()
+    {
+        int tamanhoMapa = 2000; // O tamanho do seu mundo de jogo
+        int tamanhoCelula = 100; // O tamanho de cada quadradinho do fundo
+        Color corLinha = new Color(200, 200, 200, 255); // Um cinza claro para não distrair
+        
+        //VERTICAL LINES
+        for (int x = -tamanhoMapa; x <= tamanhoMapa; x += tamanhoCelula)
+        {
+            Raylib.DrawLine(x, -tamanhoMapa, x, tamanhoMapa, corLinha);
+        }
+
+        //HORIZONTAL LINES
+        for (int y = -tamanhoMapa; y <= tamanhoMapa; y += tamanhoCelula)
+        {
+        Raylib.DrawLine(-tamanhoMapa, y, tamanhoMapa, y, corLinha);
+        }
     }
 }

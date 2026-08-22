@@ -139,17 +139,18 @@ public class Player : Sprite
         
         Vector2 screenMouse = Raylib.GetMousePosition();
         Vector2 offsetGunBarrel = WeaponEndPos;
-        Vector2 originFire = GetPosition();
         Vector2 worldMouse = Raylib.GetScreenToWorld2D(screenMouse, camera);
         
-        float adjustedAngle = angleRad - (MathF.PI / 2f);
+        
         if (EquippedWeapon != null)
         {
             EquippedWeapon.Update(deltaTime);
-            // Sistema de Tiro usando ScreenToWorld2D
-            if (Raylib.IsMouseButtonDown(MouseButton.Left)) // Usando 'Down' permite atirar segurando o botão
+            // Shooting System Using ScreenToWorld2D
+            if (Raylib.IsMouseButtonDown(MouseButton.Left))
             {
-                EquippedWeapon.Fire(offsetGunBarrel, worldMouse);
+                Vector2 shootingDirection = new Vector2(MathF.Cos(angleRad), MathF.Sin(angleRad));
+
+                EquippedWeapon.Fire(offsetGunBarrel, shootingDirection);
                 speed = SPEED_WHILE_SHOOTING;
             }
             

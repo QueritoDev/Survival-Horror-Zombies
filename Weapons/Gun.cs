@@ -42,7 +42,7 @@ public abstract class Gun
     public void SwitchFireMode() => ModeIndex = (ModeIndex + 1) % ModeIndex.Length;
     */
 
-    public void Fire(Vector2 origin, Vector2 worldDestination)
+    public void Fire(Vector2 origin, Vector2 direction)
     {   
         // Só atira se o tempo de recarga (cooldown) tiver zerado
         if (CurrentAmmo==0 && Raylib.IsMouseButtonPressed(MouseButton.Left))
@@ -55,8 +55,8 @@ public abstract class Gun
         {
             CurrentAmmo--;
             // Calcula a direção do tiro (do jogador para o mouse)
-            Vector2 direction = Vector2.Normalize(worldDestination - origin);
             PlaySoundFire();
+            
             Projeteis.Add(new Projetil(origin, direction));
             timerFire = TimeBetweenFires;
         }

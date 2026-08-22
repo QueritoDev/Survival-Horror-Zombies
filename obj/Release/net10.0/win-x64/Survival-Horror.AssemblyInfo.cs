@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("Survival-Horror")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Release")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+ad524c65e975e27bd9a6387bfaf81a98448b9d4d")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+274c27c53b38c4ace4e932cf343f3613d98edc34")]
 [assembly: System.Reflection.AssemblyProductAttribute("Survival-Horror")]
 [assembly: System.Reflection.AssemblyTitleAttribute("Survival-Horror")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

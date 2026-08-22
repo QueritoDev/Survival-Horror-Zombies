@@ -21,7 +21,6 @@ public class Projetil
     public void Update(float deltaTime)
     {
         if(!Active) return;
-
         Position += Direction * Speed * deltaTime;
 
     }

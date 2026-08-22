@@ -37,12 +37,6 @@
           }
         }
       },
-      "Microsoft.NET.ILLink.Tasks/10.0.10": {
-        "type": "package",
-        "build": {
-          "build/Microsoft.NET.ILLink.Tasks.props": {}
-        }
-      },
       "Newtonsoft.Json/13.0.3": {
         "type": "package",
         "compile": {
@@ -117,85 +111,6 @@
           "lib/net6.0/rlImGui.dll": {}
         }
       }
-    },
-    "net10.0/win-x64": {
-      "ImGui.NET/1.91.6.1": {
-        "type": "package",
-        "compile": {
-          "lib/net8.0/ImGui.NET.dll": {
-            "related": ".xml"
-          }
-        },
-        "runtime": {
-          "lib/net8.0/ImGui.NET.dll": {
-            "related": ".xml"
-          }
-        },
-        "native": {
-          "runtimes/win-x64/native/cimgui.dll": {}
-        }
-      },
-      "Microsoft.NET.ILLink.Tasks/10.0.10": {
-        "type": "package",
-        "build": {
-          "build/Microsoft.NET.ILLink.Tasks.props": {}
-        }
-      },
-      "Newtonsoft.Json/13.0.3": {
-        "type": "package",
-        "compile": {
-          "lib/net6.0/Newtonsoft.Json.dll": {
-            "related": ".xml"
-          }
-        },
-        "runtime": {
-          "lib/net6.0/Newtonsoft.Json.dll": {
-            "related": ".xml"
-          }
-        }
-      },
-      "RayGUI-cs/2.0.5": {
-        "type": "package",
-        "dependencies": {
-          "Newtonsoft.Json": "13.0.3",
-          "Raylib-cs": "7.0.1"
-        },
-        "compile": {
-          "lib/net9.0/RayGUI_cs.dll": {}
-        },
-        "runtime": {
-          "lib/net9.0/RayGUI_cs.dll": {}
-        }
-      },
-      "Raylib-cs/8.0.0": {
-        "type": "package",
-        "compile": {
-          "lib/net10.0/Raylib-cs.dll": {
-            "related": ".xml"
-          }
-        },
-        "runtime": {
-          "lib/net10.0/Raylib-cs.dll": {
-            "related": ".xml"
-          }
-        },
-        "native": {
-          "runtimes/win-x64/native/raylib.dll": {}
-        }
-      },
-      "rlImgui-cs/3.2.0": {
-        "type": "package",
-        "dependencies": {
-          "ImGui.NET": "1.91.6.1",
-          "Raylib-cs": "7.0.1"
-        },
-        "compile": {
-          "lib/net6.0/rlImGui.dll": {}
-        },
-        "runtime": {
-          "lib/net6.0/rlImGui.dll": {}
-        }
-      }
     }
   },
   "libraries": {
@@ -220,56 +135,6 @@
         "runtimes/win-arm64/native/cimgui.dll",
         "runtimes/win-x64/native/cimgui.dll",
         "runtimes/win-x86/native/cimgui.dll"
-      ]
-    },
-    "Microsoft.NET.ILLink.Tasks/10.0.10": {
-      "sha512": "f5VCIE7AJpd5YvzNTeMGVzQIgyE9tX+AreTYwQF+REbu+DZo/2Ae+jNSwhPEYrVz6RRkd7y8ubXjk6Nn6Ka+Cg==",
-      "type": "package",
-      "path": "microsoft.net.illink.tasks/10.0.10",
-      "hasTools": true,
-      "files": [
-        ".nupkg.metadata",
-        ".signature.p7s",
-        "Icon.png",
-        "Sdk/Sdk.props",
-        "THIRD-PARTY-NOTICES.TXT",
-        "analyzers/dotnet/cs/ILLink.CodeFixProvider.dll",
-        "analyzers/dotnet/cs/ILLink.RoslynAnalyzer.dll",
-        "build/Microsoft.NET.ILLink.Analyzers.props",
-        "build/Microsoft.NET.ILLink.Tasks.props",
-        "build/Microsoft.NET.ILLink.targets",
-        "microsoft.net.illink.tasks.10.0.10.nupkg.sha512",
-        "microsoft.net.illink.tasks.nuspec",
-        "tools/net/ILLink.Tasks.deps.json",
-        "tools/net/ILLink.Tasks.dll",
-        "tools/net/Mono.Cecil.Mdb.dll",
-        "tools/net/Mono.Cecil.Pdb.dll",
-        "tools/net/Mono.Cecil.Rocks.dll",
-        "tools/net/Mono.Cecil.dll",
-        "tools/net/Sdk/Sdk.props",
-        "tools/net/build/Microsoft.NET.ILLink.Analyzers.props",
-        "tools/net/build/Microsoft.NET.ILLink.Tasks.props",
-        "tools/net/build/Microsoft.NET.ILLink.targets",
-        "tools/net/illink.deps.json",
-        "tools/net/illink.dll",
-        "tools/net/illink.runtimeconfig.json",
-        "tools/netframework/ILLink.Tasks.dll",
-        "tools/netframework/ILLink.Tasks.dll.config",
-        "tools/netframework/Mono.Cecil.Mdb.dll",
-        "tools/netframework/Mono.Cecil.Pdb.dll",
-        "tools/netframework/Mono.Cecil.Rocks.dll",
-        "tools/netframework/Mono.Cecil.dll",
-        "tools/netframework/Sdk/Sdk.props",
-        "tools/netframework/System.Buffers.dll",
-        "tools/netframework/System.Collections.Immutable.dll",
-        "tools/netframework/System.Memory.dll",
-        "tools/netframework/System.Numerics.Vectors.dll",
-        "tools/netframework/System.Reflection.Metadata.dll",
-        "tools/netframework/System.Runtime.CompilerServices.Unsafe.dll",
-        "tools/netframework/build/Microsoft.NET.ILLink.Analyzers.props",
-        "tools/netframework/build/Microsoft.NET.ILLink.Tasks.props",
-        "tools/netframework/build/Microsoft.NET.ILLink.targets",
-        "useSharedDesignerContext.txt"
       ]
     },
     "Newtonsoft.Json/13.0.3": {
@@ -357,7 +222,6 @@
   "projectFileDependencyGroups": {
     "net10.0": [
       "ImGui.NET >= 1.91.6.1",
-      "Microsoft.NET.ILLink.Tasks >= 10.0.10",
       "RayGUI-cs >= 2.0.5",
       "Raylib-cs >= 8.0.0",
       "rlImgui-cs >= 3.2.0"
@@ -412,12 +276,6 @@
             "target": "Package",
             "version": "[1.91.6.1, )"
           },
-          "Microsoft.NET.ILLink.Tasks": {
-            "suppressParent": "All",
-            "target": "Package",
-            "version": "[10.0.10, )",
-            "autoReferenced": true
-          },
           "RayGUI-cs": {
             "target": "Package",
             "version": "[2.0.5, )"
@@ -442,20 +300,6 @@
         ],
         "assetTargetFallback": true,
         "warn": true,
-        "downloadDependencies": [
-          {
-            "name": "Microsoft.AspNetCore.App.Runtime.win-x64",
-            "version": "[10.0.10, 10.0.10]"
-          },
-          {
-            "name": "Microsoft.NETCore.App.Runtime.win-x64",
-            "version": "[10.0.10, 10.0.10]"
-          },
-          {
-            "name": "Microsoft.WindowsDesktop.App.Runtime.win-x64",
-            "version": "[10.0.10, 10.0.10]"
-          }
-        ],
         "frameworkReferences": {
           "Microsoft.NETCore.App": {
             "privateAssets": "all"
@@ -736,11 +580,6 @@
           "System.Xml.XPath": "(,4.3.32767]",
           "System.Xml.XPath.XDocument": "(,5.0.32767]"
         }
-      }
-    },
-    "runtimes": {
-      "win-x64": {
-        "#import": []
       }
     }
   }
